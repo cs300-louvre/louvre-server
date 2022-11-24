@@ -16,5 +16,3 @@ exports.register = asyncHandler(async (req, res, next) => {
     token,
   });
 });
-
-user register hay register user 
