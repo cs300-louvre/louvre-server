@@ -48,4 +48,9 @@ UserSchema.methods.getSignedJwtToken = function () {
   });
 };
 
+// Comparing input password with user password
+UserSchema.methods.comparePassword = async function (inputPassword) {
+  return await bcrypt.compare(inputPassword, this.password);
+};
+
 module.exports = mongoose.model("User", UserSchema);
