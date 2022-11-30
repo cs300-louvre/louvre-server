@@ -2,6 +2,7 @@ const express = require("express");
 const colors = require("colors");
 const dotenv = require("dotenv");
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 const errorHandler = require("./middlewares/errorHandler");
 
 const conncetDB = require("./config/db");
@@ -18,8 +19,8 @@ const users = require("./routes/api/users/users.routes");
 // Initialize express
 const app = express();
 
-// Body parser
-app.use(bodyParser.json());
+app.use(bodyParser.json()); // Body (json) parser
+app.use(cookieParser()); // Cookie parser
 
 // Mount routers
 app.use("/api/users", users);
