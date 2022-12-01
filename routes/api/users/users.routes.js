@@ -11,4 +11,6 @@ router.route("/login").post(userAPI.login);
 
 router.route("/current").get(auth.verifyToken, userAPI.current);
 
+router.route("/change_password").post(userAPI.changePassword);
+
 module.exports = router;
