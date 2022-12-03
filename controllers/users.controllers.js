@@ -74,13 +74,13 @@ const sendTokenInResponse = (user, statusCode, res) => {
 // @route   POST /api/users/change_password
 // @access  Private
 exports.changePassword = asyncHandler(async (req, res, next) => {
-  const { email, currentPassword, newPassword } = req.body;
+  const { currentPassword, newPassword } = req.body;
 
-  const user = await User.findOne({ email }).select("+password");
+  const user = await User.findById(req.user.id).select("+password");
   const isMatch = await user.comparePassword(currentPassword);
 
   if (!isMatch) {
-    return next(new ErrorResponse("Password is incorrect", 401));
+    return next(new ErrorResponse("Incorrect password", 401));
   }
 
   user.password = newPassword;
