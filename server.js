@@ -15,6 +15,7 @@ conncetDB();
 
 // Route files
 const users = require("./routes/api/users/users.routes");
+const museums = require("./routes/api/museums/museums.routes");
 
 // Initialize express
 const app = express();
@@ -24,6 +25,7 @@ app.use(cookieParser()); // Cookie parser
 
 // Mount routers
 app.use("/api/users", users);
+app.use("/api/museums", museums);
 
 // Error handler/catcher middleware
 app.use(errorHandler);
