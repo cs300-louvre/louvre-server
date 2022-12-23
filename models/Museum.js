@@ -5,6 +5,7 @@ const MuseumSchema = new mongoose.Schema({
   title: {
     type: String,
     required: [true, "Please add a title"],
+    unique: true,
   },
   mid: String,
   slug: String,
@@ -42,6 +43,11 @@ const MuseumSchema = new mongoose.Schema({
   coverImage: {
     type: String,
   },
+  user: {
+    type: mongoose.Schema.ObjectId,
+    ref: "User",
+    required: true,
+  },
 });
 
 // Create museum slug from the name
@@ -51,14 +57,11 @@ MuseumSchema.pre("save", async function (next) {
 });
 
 // Create custom museum id
-MuseumSchema.post("save", async function (next) {
-  if (this.mid != null) {
-    return next();
-  }
+MuseumSchema.post("save", async function () {
+  if (this.mid) return;
 
   this.mid = "m" + this._id;
   this.save();
-  next();
 });
 
 module.exports = mongoose.model("Museum", MuseumSchema);
