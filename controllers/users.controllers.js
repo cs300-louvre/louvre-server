@@ -93,11 +93,12 @@ exports.recoverPassword = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse("Email is not registered", 401));
   }
 
-  const { resetPasswordToken, expirePasswordToken} = getResetPasswordToken(email);
-	user.resetPasswordToken = resetPasswordToken;
-	user.expirePasswordToken = expirePasswordToken;
+  const { resetPasswordToken, expirePasswordToken } =
+    getResetPasswordToken(email);
+  user.resetPasswordToken = resetPasswordToken;
+  user.expirePasswordToken = expirePasswordToken;
 
-	await user.updateOne({ resetPasswordToken, expirePasswordToken });
+  await user.updateOne({ resetPasswordToken, expirePasswordToken });
 
   const resetUrl = `${req.protocol}://${req.get(
     "host"
@@ -115,11 +116,12 @@ exports.recoverPassword = asyncHandler(async (req, res, next) => {
     // console.log(message);
 
     res.status(200).json({ success: true, data: message });
-
   } catch (err) {
     user.resetPasswordToken = undefined;
     user.expirePasswordToken = undefined;
+
     await user.updateOne({ resetPasswordToken, expirePasswordToken });
+
     return next(new ErrorResponse("Email could not be sent", 500));
   }
 });
@@ -131,20 +133,20 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
   const { resetToken } = req.params;
   const { password } = req.body;
 
-	if (!resetToken) {
-		return next(new ErrorResponse("Invalid token", 400));
-	}
+  if (!resetToken) {
+    return next(new ErrorResponse("Invalid token", 400));
+  }
 
-	const resetPasswordToken = resetToken
+  const resetPasswordToken = resetToken;
   const user = await User.findOne({ resetPasswordToken });
 
   if (!user) {
-		return next(new ErrorResponse("Invalid token", 400));
-	}
+    return next(new ErrorResponse("Invalid token", 400));
+  }
 
-	if (user.expirePasswordToken < Date.now()) {
-		return next(new ErrorResponse("Token has expired", 400));
-	}
+  if (user.expirePasswordToken < Date.now()) {
+    return next(new ErrorResponse("Token has expired", 400));
+  }
 
   user.password = password;
   user.resetPasswordToken = undefined;
@@ -157,7 +159,6 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
     success: true,
     data: "Password reset success",
   });
-
 });
 
 // Get reset password token
@@ -168,10 +169,11 @@ const getResetPasswordToken = function (email) {
   const resetPasswordToken = crypto
     .createHash("sha256")
     .update(resetToken)
-    .digest("hex").toString();
+    .digest("hex")
+    .toString();
 
   // Set expire
   const expirePasswordToken = Date.now() + 10 * 60 * 1000; // 10 minutes
 
-  return {resetPasswordToken, expirePasswordToken};
+  return { resetPasswordToken, expirePasswordToken };
 };
