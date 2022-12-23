@@ -17,4 +17,6 @@ router.route("/recover_password").post(userAPI.recoverPassword);
 
 router.route("/recover_password/:resetToken").put(userAPI.resetPassword);
 
+router.route("/change_profile").put(auth.verifyToken, userAPI.changeProfile);
+
 module.exports = router;

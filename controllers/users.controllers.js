@@ -189,3 +189,23 @@ const getResetPasswordToken = function (email) {
 
   return { resetPasswordToken, expirePasswordToken };
 };
+
+// @desc    Update user details
+// @route   PUT /api/users/change_profile
+// @access  Private
+exports.changeProfile = asyncHandler(async (req, res, next) => {
+  const content = {
+    name: req.body.name,
+    email: req.body.email,
+  };
+
+  const user = await User.findByIdAndUpdate(req.user.id, content, {
+    new: true,
+    runValidators: true,
+  });
+
+  res.status(200).json({
+    success: true,
+    data: user,
+  });
+});
