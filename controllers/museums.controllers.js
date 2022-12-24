@@ -17,21 +17,33 @@ exports.getMuseums = asyncHandler(async (req, res, next) => {
   });
 });
 
-// @desc    Get single museum by id or slug
-// @route   GET /api/museums/:id
-// @access  Public
-exports.getMuseum = asyncHandler(async (req, res, next) => {
+const getMuseumByIdOrSlug = async (req) => {
   // get id or slug from params
   const { id } = req.params;
 
   // check if id is valid ObjectId or slug
-  console.log(id);
   const museum = await Museum.findOne({
     $or: [
       { _id: isValidObjectId(id) ? Types.ObjectId(id) : undefined },
       { slug: id },
     ],
   });
+
+  // check if museum exists
+  if (!museum) {
+    return next(
+      new ErrorResponse(`Museum not found with id of ${req.params.id}`, 404)
+    );
+  }
+
+  return museum;
+};
+
+// @desc    Get single museum by id or slug
+// @route   GET /api/museums/:id
+// @access  Public
+exports.getMuseum = asyncHandler(async (req, res, next) => {
+  const museum = await getMuseumByIdOrSlug(req, next);
 
   res.status(200).json({
     success: true,
