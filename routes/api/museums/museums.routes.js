@@ -7,6 +7,8 @@ const router = express.Router();
 
 router.route("/").get(museumAPI.getMuseums);
 
+router.route("/:id").get(museumAPI.getMuseum);
+
 router.route("/").post(auth.verifyToken, museumAPI.createMuseum);
 
 module.exports = router;
