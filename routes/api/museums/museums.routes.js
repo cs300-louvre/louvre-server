@@ -11,4 +11,6 @@ router.route("/:id").get(museumAPI.getMuseum);
 
 router.route("/").post(auth.verifyToken, museumAPI.createMuseum);
 
+router.route("/:id").put(auth.verifyToken, museumAPI.updateMuseum);
+
 module.exports = router;
