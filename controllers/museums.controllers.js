@@ -50,3 +50,35 @@ exports.createMuseum = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({ success: true, data: museum });
 });
+
+// @desc    Update museum by id or slug
+// @route   PUT /api/museums/:id
+// @access  Private
+exports.updateMuseum = asyncHandler(async (req, res, next) => {
+  const museum = await getMuseumByIdOrSlug(req);
+
+  // Check if museum exists
+  if (!museum) {
+    return next(
+      new ErrorResponse(`Museum not found with id of ${req.params.id}`, 404)
+    );
+  }
+
+  // Make sure user is museum owner
+  if (museum.user.toString() !== req.user.id && req.user.role !== "admin") {
+    return next(
+      new ErrorResponse(
+        `User ${req.user.id} is not authorized to update this museum`,
+        401
+      )
+    );
+  }
+
+  // Update museum
+  const query = await Museum.findOneAndUpdate(museum._id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  res.status(200).json({ success: true, data: query });
+});
