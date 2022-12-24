@@ -52,6 +52,9 @@ const MuseumSchema = new mongoose.Schema({
 
 // Create museum slug from the name
 MuseumSchema.pre("save", async function (next) {
+  if (!this.isModified("title")) {
+    next();
+  }
   this.slug = slugify(this.title, { lower: true });
   next();
 });
