@@ -2,6 +2,7 @@ const User = require("../models/User");
 const Museum = require("../models/Museum");
 const asyncHandler = require("../middlewares/asyncHandler");
 const ErrorResponse = require("../utils/errorResponse");
+const { Types, isValidObjectId } = require("mongoose");
 
 // @desc    Get all museums
 // @route   GET /api/museums
@@ -13,6 +14,28 @@ exports.getMuseums = asyncHandler(async (req, res, next) => {
     success: true,
     count: museums.length,
     data: museums,
+  });
+});
+
+// @desc    Get single museum by id or slug
+// @route   GET /api/museums/:id
+// @access  Public
+exports.getMuseum = asyncHandler(async (req, res, next) => {
+  // get id or slug from params
+  const { id } = req.params;
+
+  // check if id is valid ObjectId or slug
+  console.log(id);
+  const museum = await Museum.findOne({
+    $or: [
+      { _id: isValidObjectId(id) ? Types.ObjectId(id) : undefined },
+      { slug: id },
+    ],
+  });
+
+  res.status(200).json({
+    success: true,
+    data: museum,
   });
 });
 
