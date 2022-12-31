@@ -1,9 +1,14 @@
 import { ErrorResponse } from "../utils/errorResponse";
 import { RequestWithUser } from "../utils/requestWithUser";
-import { Response} from "express";
+import { Response } from "express";
 
 // References: https://expressjs.com/en/guide/error-handling.html
-const errorHandler = (err: any, req: RequestWithUser, res: Response, next: any) => {
+const errorHandler = (
+  err: any,
+  req: RequestWithUser,
+  res: Response,
+  next: any
+) => {
   let error = { ...err };
 
   error.message = err.message;
@@ -36,4 +41,6 @@ const errorHandler = (err: any, req: RequestWithUser, res: Response, next: any) 
   });
 };
 
-module.exports = errorHandler;
+export { errorHandler };
+export default errorHandler;
+// module.exports = errorHandler;
