@@ -1,70 +1,99 @@
-const mongoose = require("mongoose");
-const slugify = require("slugify");
+import { Schema, model, connect, Types } from 'mongoose';
+import slugify from 'slugify';
 
-const MuseumSchema = new mongoose.Schema({
-  title: {
+import { IMuseumResponse } from '../types';
+
+const MuseumSchema = new Schema<IMuseumResponse>({
+  name: {
     type: String,
-    required: [true, "Please add a title"],
-    unique: true,
+    required: [true, "Please add a name"],
+    // unique: true,
   },
-  mid: String,
-  slug: String,
-  fromDate: {
-    type: Date,
-    required: [true, "Please add the beginning date"],
+  museumId: { type: String, unique: true },
+  thumbnailUrl: String,
+  coverUrl: String,
+  genre: {
+    type: String,
+    enum: [
+      "new",  
+      "general",
+      "natural",
+      "science",
+      "history",
+      "art",
+      "virtual",
+    ],
+    required: [true, "Please add a genre"],
   },
-  toDate: {
-    type: Date,
-    required: [true, "Please add the ending date"],
+  numOfFollowers: {
+    type: Number,
+    default: 0,
+  },
+  numOfReviews: {
+    type: Number,
+    default: 0,
+  },
+  ticketPrice: {
+    type: Number,
+    default: 0,
+  },
+  sales: {
+    type: Number,
+    default: 0,
+  },
+  location: {
+    type: String,
+    required: [true, "Please add a location"],
+  },
+  description: {
+    type: String,
+    required: [true, "Please add a description"],
   },
   rating: {
     type: Number,
     min: [1, "Rating must be at least 1"],
-    max: [5, "Rating must can not be more than 5"],
+    max: [10, "Rating must can not be more than 10"],
   },
-  numReviews: {
-    type: Number,
-    default: 0,
-  },
-  price: {
-    type: Number,
-    required: [true, "Please add a price"],
-  },
-  ticketSold: {
-    type: Number,
-    default: 0,
-  },
-  address: {
+  userId: {
     type: String,
-    required: [true, "Please add an address"],
-  },
-  lat: Number,
-  lng: Number,
-  coverImage: {
-    type: String,
-  },
-  user: {
-    type: mongoose.Schema.ObjectId,
-    ref: "User",
-    required: true,
+    required: [true, "Please add a userId"],
   },
 });
 
-// Create museum slug from the name
-MuseumSchema.pre("save", async function (next) {
-  if (!this.isModified("title")) {
-    next();
-  }
-  this.slug = slugify(this.title, { lower: true });
-  next();
-});
-
-// Create custom museum id
+// Create museumId
 MuseumSchema.post("save", async function () {
-  if (this.mid) return;
-
-  this.mid = "m" + this._id;
+  if (this.museumId) {
+    return;
+  }
+  this.museumId = "m" + this._id;
   this.save();
 });
 
-module.exports = mongoose.model("Museum", MuseumSchema);
+// Delete _id and __v from the response
+MuseumSchema.set("toJSON", {
+  transform: function (doc, ret, options) {
+    delete ret._id;
+    delete ret.__v;
+  },
+});
+
+
+
+// // Create museum slug from the name
+// MuseumSchema.pre("save", async function (next) {
+//   if (!this.isModified("title")) {
+//     next();
+//   }
+//   this.slug = slugify(this.name, { lower: true });
+//   next();
+// });
+
+// // Create custom museum id
+// MuseumSchema.post("save", async function () {
+//   if (this.mid) return;
+
+//   this.mid = "m" + this._id;
+//   this.save();
+// });
+
+module.exports = model<IMuseumResponse>("Museum", MuseumSchema);
