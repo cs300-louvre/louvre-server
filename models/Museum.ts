@@ -1,7 +1,7 @@
-import { Schema, model, connect, Types } from 'mongoose';
-import slugify from 'slugify';
+import { Schema, model, connect, Types } from "mongoose";
+import slugify from "slugify";
 
-import { IMuseumResponse } from '../types';
+import { IMuseumResponse } from "../types";
 
 const MuseumSchema = new Schema<IMuseumResponse>({
   name: {
@@ -9,20 +9,18 @@ const MuseumSchema = new Schema<IMuseumResponse>({
     required: [true, "Please add a name"],
     // unique: true,
   },
-  museumId: { type: String, unique: true },
-  thumbnailUrl: String,
-  coverUrl: String,
+  museumId: { type: String, unique: true, index: true },
+  thumbnailUrl: {
+    type: String,
+    default: "no-photo.jpg",
+  },
+  coverUrl: {
+    type: String,
+    default: "no-photo.jpg",
+  },
   genre: {
     type: String,
-    enum: [
-      "new",  
-      "general",
-      "natural",
-      "science",
-      "history",
-      "art",
-      "virtual",
-    ],
+    enum: ["new", "general", "natural", "science", "history", "art", "virtual"],
     required: [true, "Please add a genre"],
   },
   numOfFollowers: {
@@ -53,6 +51,7 @@ const MuseumSchema = new Schema<IMuseumResponse>({
     type: Number,
     min: [1, "Rating must be at least 1"],
     max: [10, "Rating must can not be more than 10"],
+    default: 1,
   },
   userId: {
     type: String,
@@ -77,7 +76,7 @@ MuseumSchema.set("toJSON", {
   },
 });
 
-
+export default model<IMuseumResponse>("Museum", MuseumSchema);
 
 // // Create museum slug from the name
 // MuseumSchema.pre("save", async function (next) {
@@ -95,5 +94,3 @@ MuseumSchema.set("toJSON", {
 //   this.mid = "m" + this._id;
 //   this.save();
 // });
-
-module.exports = model<IMuseumResponse>("Museum", MuseumSchema);
