@@ -1,5 +1,5 @@
 const User = require("../models/User");
-const asyncHandler = require("../middlewares/asyncHandler");
+const asyncHandler = require("express-async-handler");
 const ErrorResponse = require("../utils/errorResponse");
 const crypto = require("crypto");
 
@@ -60,7 +60,9 @@ const sendTokenInResponse = (user, statusCode, res) => {
   const token = user.getSignedJwtToken();
 
   const option = {
-    expires: Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+    ),
     httpOnly: true, // Cookie can't be accessed or modified in any way by the browser
     secure: process.env.NODE_ENV === "production", // Cookie will only be sent on an encrypted connection
   };

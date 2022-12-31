@@ -1,96 +1,105 @@
 const User = require("../models/User");
-const Museum = require("../models/Museum");
-const asyncHandler = require("../middlewares/asyncHandler");
-const ErrorResponse = require("../utils/errorResponse");
+import Museum from "../models/Museum";
+
 const { Types, isValidObjectId } = require("mongoose");
+import { Response, Request } from "express";
+import asyncHandler from "express-async-handler";
+import { RequestWithUser } from "../utils/requestWithUser";
+import { ErrorResponse } from "../utils/errorResponse";
+import type { IMuseumResponse } from "../types";
+
+// Declare a custom type for the request object
 
 // @desc    Get all museums
 // @route   GET /api/museums
 // @access  Public
-exports.getMuseums = asyncHandler(async (req, res, next) => {
-  const museums = await Museum.find();
+exports.getMuseums = asyncHandler(
+  async (req: Request, res: Response, next: any) => {
+    const museums: IMuseumResponse[] | null = await Museum.find();
 
-  res.status(200).json({
-    success: true,
-    count: museums.length,
-    data: museums,
-  });
-});
-
-const getMuseumByIdOrSlug = async (req) => {
-  // get id or slug from params
-  const { id } = req.params;
-
-  // check if id is valid ObjectId or slug
-  const museum = await Museum.findOne({
-    $or: [
-      { _id: isValidObjectId(id) ? Types.ObjectId(id) : undefined },
-      { slug: id },
-    ],
-  });
-
-  // check if museum exists
-  if (!museum) {
-    return next(
-      new ErrorResponse(`Museum not found with id of ${req.params.id}`, 404)
-    );
+    res.status(200).json({
+      success: true,
+      count: museums.length,
+      data: museums,
+    });
   }
-
-  return museum;
-};
+);
 
 // @desc    Get single museum by id or slug
 // @route   GET /api/museums/:id
 // @access  Public
-exports.getMuseum = asyncHandler(async (req, res, next) => {
-  const museum = await getMuseumByIdOrSlug(req, next);
+exports.getMuseum = asyncHandler(
+  async (req: RequestWithUser, res: Response, next: any) => {
+    const museum: IMuseumResponse | null = await Museum.findOne({
+      museumId: req.params.id,
+    });
 
-  res.status(200).json({
-    success: true,
-    data: museum,
-  });
-});
+    if (!museum) {
+      return next(
+        new ErrorResponse(
+          `Museum not found with museum id of ${req.params.id}`,
+          404
+        )
+      );
+    }
+
+    res.status(200).json({
+      success: true,
+      data: museum,
+    });
+  }
+);
 
 // @desc    Create new museum
 // @route   POST /api/museums
 // @access  Private
-exports.createMuseum = asyncHandler(async (req, res, next) => {
-  // Add user to req.body
-  req.body.user = req.user.id;
+exports.createMuseum = asyncHandler(
+  async (req: RequestWithUser, res: Response, next: any) => {
+    // Add user to req.body
+    req.body.userId = req.user.id;
 
-  const museum = await Museum.create(req.body);
+    const museum: IMuseumResponse | null = await Museum.create(req.body);
 
-  res.status(200).json({ success: true, data: museum });
-});
+    res.status(200).json({ success: true, data: museum });
+  }
+);
 
 // @desc    Update museum by id or slug
 // @route   PUT /api/museums/:id
 // @access  Private
-exports.updateMuseum = asyncHandler(async (req, res, next) => {
-  const museum = await getMuseumByIdOrSlug(req);
+exports.updateMuseum = asyncHandler(
+  async (req: RequestWithUser, res: Response, next: any) => {
+    const museum: IMuseumResponse | null = await Museum.findOne({
+      museumId: req.params.id.toString().substring(1, req.params.id.length),
+    });
 
-  // Check if museum exists
-  if (!museum) {
-    return next(
-      new ErrorResponse(`Museum not found with id of ${req.params.id}`, 404)
+    // Check if museum exists
+    if (!museum) {
+      return next(
+        new ErrorResponse(`Museum not found with id of ${req.params.id}`, 404)
+      );
+    }
+
+    // Make sure user is museum owner
+    if (museum.userId.toString() !== req.user.id && req.user.role !== "admin") {
+      return next(
+        new ErrorResponse(
+          `User ${req.user.id} is not authorized to update this museum`,
+          401
+        )
+      );
+    }
+
+    // Update museum
+    const query: IMuseumResponse | null = await Museum.findOneAndUpdate(
+      { museumId: museum.museumId },
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
     );
+
+    res.status(200).json({ success: true, data: query });
   }
-
-  // Make sure user is museum owner
-  if (museum.user.toString() !== req.user.id && req.user.role !== "admin") {
-    return next(
-      new ErrorResponse(
-        `User ${req.user.id} is not authorized to update this museum`,
-        401
-      )
-    );
-  }
-
-  // Update museum
-  const query = await Museum.findOneAndUpdate(museum._id, req.body, {
-    new: true,
-    runValidators: true,
-  });
-
-  res.status(200).json({ success: true, data: query });
-});
+);
