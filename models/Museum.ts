@@ -1,5 +1,4 @@
 import { Schema, model, connect, Types } from "mongoose";
-import slugify from "slugify";
 
 import { IMuseumResponse } from "../types";
 
@@ -53,6 +52,7 @@ const MuseumSchema = new Schema<IMuseumResponse>({
     max: [10, "Rating must can not be more than 10"],
     default: 1,
   },
+  createdAt: String,
   userId: {
     type: String,
     required: [true, "Please add a userId"],
@@ -78,6 +78,9 @@ MuseumSchema.set("toJSON", {
 
 // A pre-hook to set the useId to the current user before saving
 MuseumSchema.pre("save", function (next) {
+  if (!this.createdAt) {
+    this.createdAt = Date.now().toString();
+  }
   next();
 });
 
