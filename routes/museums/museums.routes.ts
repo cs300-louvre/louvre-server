@@ -1,8 +1,8 @@
 // const express = require("express");
 import * as express from "express";
 
-const museumAPI = require("../../../controllers/museums.controllers");
-const auth = require("../../../middlewares/auth");
+const museumAPI = require("../../controllers/museums.controllers");
+const auth = require("../../middlewares/auth");
 
 const router = express.Router();
 
