@@ -15,7 +15,7 @@ import {
 } from "../utils/requestWithUser";
 
 // @desc    Get all events (can be filtered by genre)
-// @route   GET /events[?genre=history]
+// @route   GET /event[?genre=history]
 // @access  Public
 exports.getEvents = asyncHandler(
   async (req: RequestWithUser, res: Response, next: any) => {
@@ -48,7 +48,7 @@ exports.getEvents = asyncHandler(
 );
 
 // @desc    Create a new event
-// @route   POST /events
+// @route   POST /event
 // @access  Private
 exports.createEvent = asyncHandler(
   async (
@@ -76,6 +76,29 @@ exports.createEvent = asyncHandler(
 
     res.status(201).json({
       data: event,
+    });
+  }
+);
+
+// @desc    Get a single event
+// @route   GET /event/:id
+// @access  Public
+exports.getEvent = asyncHandler(
+  async (req: RequestWithUser, res: Response, next: any) => {
+    const event: any | null = await Event.findById(req.params.id);
+
+    if (!event) {
+      return next(
+        new ErrorResponse(`Event not found with id of ${req.params.id}`, 404)
+      );
+    } else {
+      if (req.user) {
+        event.setIsFollowedByUser(req.user._id);
+      }
+    }
+
+    res.status(200).json({
+      data: event as IMuseumResponse,
     });
   }
 );

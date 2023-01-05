@@ -10,4 +10,6 @@ router.route("/").get(auth.verifyTokenChill, eventAPI.getEvents);
 
 router.route("/").post(auth.verifyToken, eventAPI.createEvent);
 
+router.route("/:id").get(auth.verifyTokenChill, eventAPI.getEvent);
+
 module.exports = router;
