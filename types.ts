@@ -3,7 +3,9 @@ export type ISignInData = {
   password: string;
 };
 
-export type ISignUpData = ISignInData;
+export type ISignUpData = ISignInData & {
+  name: string;
+};
 
 export type ISignInResponse = {
   token: string;
@@ -11,10 +13,14 @@ export type ISignInResponse = {
 
 export type ISignUpResponse = ISignInResponse;
 
+export type IRole = "admin" | "manager" | "user";
+
 export type IGetMeResponse = {
   userId: string;
   email: string;
   name: string;
+  thumbnailUrl: string;
+  role: IRole;
 };
 
 export type IFollowedMuseum = {
@@ -31,7 +37,7 @@ export type IFollowedEvent = {
   rating: number;
 };
 
-export type ITicketState = "WAIT FOR PAYMENT" | "PAID";
+export type ITicketStatus = "wait" | "paid" | "used";
 export type ITicketResponse = {
   ticketId: string;
   userId: string;
@@ -40,11 +46,10 @@ export type ITicketResponse = {
   thumbnailUrl: string; // Get the thumbnail of the museum or the event that sells this ticket
   name: string;
   price: number;
-  isCheckedIn: boolean;
-  address: string;
+  location: string;
   startTime?: string; // If museum entrance ticket then there is no start or end time
   endTime?: string;
-  state: ITicketState;
+  status: ITicketStatus;
 };
 
 export type IEOM = "event" | "museum";
@@ -55,29 +60,36 @@ export type IRatingCoreData = {
   content: string;
 };
 export type IRatingResponse = {
+  ratingId: string;
   userId: string;
   museumId: string;
   thumbnailUrl: string; // the thumbnail of the user who rate
   rating: number;
   content: string;
   userName: string;
+  createdAt: string;
 };
+
+export type INotificationType = "museum" | "event" | "system" | "message";
 
 export type INotificationResponse = {
   thumbnailUrl: string;
   name: string;
   content: string;
   notificationId: string;
+  type: INotificationType;
+  sourceId: string;
+  // if type === museum, then sourceId would be a museumId, similarly for type === "event";
+  // if type === "message" then sourceId would be a userId; if type === "system", then this could be null
 };
 
-export type IChatNotificationResponse = {
-  chatId: string;
-  name: string; // GET THE NAME OF THE OTHER USER WHO IS IN THE CONVERSATION
+export type IConversationPreviewResponse = {
+  conversationId: string;
+  name: string; // GET THE NAME OF THE ONE WHO SEND THE LATEST MESSAGE
   content: string; // GET THE LATEST TEXT OF THE CONVERSATION WHETHER IT IS FROM THE CURRENT USER OF THE OTHER ONE
-  userId: string; // GET THE USER ID OF THE ONE WHO SEND THE LATEST MESSAGE
+  userId: string; // GET THE USER ID OF THE OTHER ONE IN THE CONVERSATION
   thumbnailUrl: string; // GET THE THUMBNAIL OF THE OTHER USER
   sentAt: string;
-  isSeen: boolean;
 };
 
 export type IPostCoreData = {
@@ -165,7 +177,6 @@ export type IEventResponse = {
   ticketPrice: number;
   rating: number;
   museumId: string; // KHI USER UPLOAD EVENT LÊN THÌ SERVER CHỈ CÓ ĐƯỢC USER ID THÔI (THÔNG QUA TOKEN), SERVER PHẢI COI USER ĐÓ QUẢN LÍ MUSEUM NÀO RỒI CHÈN MUSEUM ID VÀO ĐÂY
-  museumThumbnailUrl: string;
   museumName: string;
   startTime: string;
   endTime: string;
@@ -174,14 +185,16 @@ export type IEventResponse = {
 };
 
 export type IMessageCoreData = {
-  chatId: string;
+  conversationId: string;
   content: string;
 };
+
 export type IMessageResponse = {
-  chatId: string;
+  conversationId: string;
   userId: string; // GET USER ID OF THE ONE WHO SEND THE MESSAGE
+  userName: string; // GET USER NAME OF THE ONE WHO SEND THE MESSAGE
   thumbnailUrl: string; // GET THUMBNAIL OF THE USER WHO SEND THE MESSAGE (FROMUSERID)
   content: string;
-  isSeen: string;
   sentAt: string;
+  messageId: string;
 };
