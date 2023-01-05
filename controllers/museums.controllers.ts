@@ -15,11 +15,24 @@ import {
 // Declare a custom type for the request object
 
 // @desc    Get all museums
-// @route   GET /api/museums
+// @route   GET /museums
 // @access  Public
 exports.getMuseums = asyncHandler(
   async (req: Request, res: Response, next: any) => {
-    const museums: IMuseumResponse[] | null = await Museum.find();
+    let museums: IMuseumResponse[] | null;
+
+    if (req.query.genre) {
+      museums = await Museum.find({
+        genre: { $regex: req.query.genre, $options: "i" },
+      });
+    } else {
+      museums = await Museum.find();
+    }
+
+    // sort by createdAt
+    museums.sort((a, b) => {
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
 
     res.status(200).json({
       success: true,
@@ -30,7 +43,7 @@ exports.getMuseums = asyncHandler(
 );
 
 // @desc    Get single museum by id or slug
-// @route   GET /api/museums/:id
+// @route   GET /museums/:id
 // @access  Public
 exports.getMuseum = asyncHandler(
   async (req: Request, res: Response, next: any) => {
