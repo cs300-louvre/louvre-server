@@ -29,7 +29,7 @@ app.use(cookieParser()); // Cookie parser
 
 // Mount routers
 app.use("/users", users);
-app.use("/museums", museums);
+app.use("/museum", museums);
 app.use("/browse", browse);
 app.use("/me", me);
 
