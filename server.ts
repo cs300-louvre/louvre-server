@@ -1,10 +1,3 @@
-// const express = require("express");
-// const dotenv = require("dotenv");
-// const bodyParser = require("body-parser");
-// const cookieParser = require("cookie-parser");
-// const errorHandler = require("./middlewares/errorHandler");
-// const mongoose = require("mongoose");
-
 import express from "express";
 import * as dotenv from "dotenv";
 import mongoose from "mongoose";
@@ -25,6 +18,7 @@ conncetDB();
 // Route files
 const users = require("./routes/api/users/users.routes");
 const museums = require("./routes/api/museums/museums.routes");
+const browse = require("./routes/browse/browse.routes");
 
 // Initialize express
 const app = express();
@@ -35,6 +29,7 @@ app.use(cookieParser()); // Cookie parser
 // Mount routers
 app.use("/api/users", users);
 app.use("/api/museums", museums);
+app.use("/browse", browse);
 
 // Error handler/catcher middleware
 app.use(errorHandler);
