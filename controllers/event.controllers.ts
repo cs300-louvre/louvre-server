@@ -16,18 +16,23 @@ import {
 
 // @desc    Get all events (can be filtered by genre)
 // @route   GET /event[?genre=history]
+// @route   GET /museum/:museumId/event[?genre=history]
 // @access  Public
 exports.getEvents = asyncHandler(
   async (req: RequestWithUser, res: Response, next: any) => {
     let events: any | null;
 
+    let query: any = {};
+
     if (req.query.genre) {
-      events = await Event.find({
-        genre: { $regex: req.query.genre, $options: "i" },
-      });
-    } else {
-      events = await Event.find();
+      query.genre = { $regex: req.query.genre, $options: "i" };
+    } 
+
+    if (req.params.museumId) {
+      query.museumId = req.params.museumId;
     }
+    
+    events = await Event.find(query);
 
     // sort by createdAt
     events.sort((a: any, b: any) => {
