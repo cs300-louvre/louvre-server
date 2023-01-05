@@ -17,6 +17,10 @@ const UserSchema = new mongoose.Schema({
       "Please add a valid email",
     ],
   },
+  thumbnailUrl: {
+    type: String,
+    default: "https://i.imgur.com/8Km9tLL.png",
+  },
   role: {
     type: String,
     enum: ["user", "manager", "admin"],
