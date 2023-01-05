@@ -11,6 +11,7 @@ export type IEventSchema = {
   coverUrl: string;
   sales: number;
   eventId: string;
+  isFollowedByUser: boolean;
   numOfFollowers: number;
   numOfReviews: number;
   ticketPrice: number;
@@ -62,7 +63,11 @@ const EventSchema = new Schema<IEventSchema>({
     type: Number,
     default: 0,
   },
-  eventId: { type: String, unique: true, index: true },
+  eventId: { type: String },
+  isFollowedByUser: {
+    type: Boolean,
+    default: false,
+  },
   numOfFollowers: {
     type: Number,
     default: 0,
@@ -83,7 +88,6 @@ const EventSchema = new Schema<IEventSchema>({
   },
   museumId: {
     type: String,
-    ref: "Museum",
   },
   museumName: String,
   startTime: String,
@@ -91,7 +95,6 @@ const EventSchema = new Schema<IEventSchema>({
   createdAt: String,
   userId: {
     type: String,
-    ref: "User",
     required: [true, "Please add a userId"],
   },
 });
@@ -115,12 +118,21 @@ EventSchema.pre("save", function (next) {
 
 // Create museumId from _id
 EventSchema.post("save", async function () {
-  if (this.museumId) {
+  if (this.eventId) {
     return;
   }
 
-  this.museumId = this._id.toString();
+  this.eventId = this._id.toString();
   this.save();
 });
+
+// A method to set isFollowedByUser property
+EventSchema.methods.setIsFollowedByUser = async function (userId: string) {
+  // const isFollowedByUser = this.followers.some(
+  //   (follower: any) => follower.userId.toString() === userId
+  // );
+
+  this.isFollowedByUser = false;
+};
 
 export default model<IEventSchema>("Event", EventSchema);

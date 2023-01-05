@@ -6,6 +6,8 @@ const auth = require("../../middlewares/auth");
 
 const router = express.Router();
 
-router.route("/").get(eventAPI.getMuseums);
+router.route("/").get(auth.verifyTokenChill, eventAPI.getEvents);
+
+router.route("/").post(auth.verifyToken, eventAPI.createEvent);
 
 module.exports = router;
