@@ -19,6 +19,7 @@ conncetDB();
 const users = require("./routes/users/users.routes");
 const museums = require("./routes/museums/museums.routes");
 const browse = require("./routes/browse/browse.routes");
+const me = require("./routes/me/me.routes");
 
 // Initialize express
 const app = express();
@@ -30,6 +31,7 @@ app.use(cookieParser()); // Cookie parser
 app.use("/users", users);
 app.use("/museums", museums);
 app.use("/browse", browse);
+app.use("/me", me);
 
 // Error handler/catcher middleware
 app.use(errorHandler);
