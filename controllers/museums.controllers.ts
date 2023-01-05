@@ -1,12 +1,16 @@
 const User = require("../models/User");
-import Museum from "../models/Museum";
 
 const { Types, isValidObjectId } = require("mongoose");
 import { Response, Request } from "express";
 import asyncHandler from "express-async-handler";
-import { RequestWithUser } from "../utils/requestWithUser";
-import { ErrorResponse } from "../utils/errorResponse";
-import type { IMuseumResponse } from "../types";
+
+import Museum from "../models/Museum";
+import ErrorResponse from "../utils/errorResponse";
+import type { IMuseumCoreData, IMuseumResponse } from "../types";
+import {
+  RequestWithUser,
+  GenericRequestWithUser,
+} from "../utils/requestWithUser";
 
 // Declare a custom type for the request object
 
@@ -29,7 +33,7 @@ exports.getMuseums = asyncHandler(
 // @route   GET /api/museums/:id
 // @access  Public
 exports.getMuseum = asyncHandler(
-  async (req: RequestWithUser, res: Response, next: any) => {
+  async (req: Request, res: Response, next: any) => {
     const museum: IMuseumResponse | null = await Museum.findOne({
       museumId: req.params.id,
     });
@@ -54,7 +58,11 @@ exports.getMuseum = asyncHandler(
 // @route   POST /api/museums
 // @access  Private
 exports.createMuseum = asyncHandler(
-  async (req: RequestWithUser, res: Response, next: any) => {
+  async (
+    req: GenericRequestWithUser<{}, {}, IMuseumCoreData>,
+    res: Response,
+    next: any
+  ) => {
     // Add user to req.body
     req.body.userId = req.user.id;
 
@@ -68,19 +76,24 @@ exports.createMuseum = asyncHandler(
 // @route   PUT /api/museums/:id
 // @access  Private
 exports.updateMuseum = asyncHandler(
-  async (req: RequestWithUser, res: Response, next: any) => {
+  async (
+    req: GenericRequestWithUser<any, {}, IMuseumCoreData>,
+    res: Response,
+    next: any
+  ) => {
+    // Find museum by id
     const museum: IMuseumResponse | null = await Museum.findOne({
-      museumId: req.params.id.toString().substring(1, req.params.id.length),
+      museumId: req.params.id.toString(),
     });
 
-    // Check if museum exists
+    // Check museum existence
     if (!museum) {
       return next(
         new ErrorResponse(`Museum not found with id of ${req.params.id}`, 404)
       );
     }
 
-    // Make sure user is museum owner
+    // Verify current user is museum owner
     if (museum.userId.toString() !== req.user.id && req.user.role !== "admin") {
       return next(
         new ErrorResponse(
