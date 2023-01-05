@@ -64,7 +64,7 @@ MuseumSchema.post("save", async function () {
   if (this.museumId) {
     return;
   }
-  this.museumId = "m" + this._id;
+  this.museumId = this._id.toString();
   this.save();
 });
 
@@ -74,6 +74,11 @@ MuseumSchema.set("toJSON", {
     delete ret._id;
     delete ret.__v;
   },
+});
+
+// A pre-hook to set the useId to the current user before saving
+MuseumSchema.pre("save", function (next) {
+  next();
 });
 
 export default model<IMuseumResponse>("Museum", MuseumSchema);
