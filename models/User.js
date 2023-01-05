@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const UserSchema = new mongoose.Schema({
+  userId: String,
   name: {
     type: String,
     required: [true, "Please add a name"],
@@ -18,7 +19,7 @@ const UserSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["user", "admin"],
+    enum: ["user", "manager", "admin"],
     default: "user",
   },
   password: {
@@ -34,6 +35,15 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+});
+
+UserSchema.post("save", async function () {
+  if (this.userId) {
+    return;
+  }
+
+  this.userId = this._id.toString();
+  this.save();
 });
 
 // Encrypt password using bcrypt

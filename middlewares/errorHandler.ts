@@ -1,8 +1,14 @@
-const ErrorResponse = require("../utils/errorResponse");
-const colors = require("colors");
+import { ErrorResponse } from "../utils/errorResponse";
+import { RequestWithUser } from "../utils/requestWithUser";
+import { Response } from "express";
 
 // References: https://expressjs.com/en/guide/error-handling.html
-const errorHandler = (err, req, res, next) => {
+const errorHandler = (
+  err: any,
+  req: RequestWithUser,
+  res: Response,
+  next: any
+) => {
   let error = { ...err };
 
   error.message = err.message;
@@ -18,8 +24,8 @@ const errorHandler = (err, req, res, next) => {
 
   // Mongoose validation error
   if (err.name === "ValidationError") {
-    const message = Object.values(err.errors).map((val) => val.message);
-    error = new ErrorResponse(message, 400);
+    const message = Object.values(err.errors).map((val: any) => val.message);
+    error = new ErrorResponse(message.toString(), 400);
   }
 
   // Wrong JWT token
@@ -35,4 +41,6 @@ const errorHandler = (err, req, res, next) => {
   });
 };
 
-module.exports = errorHandler;
+export { errorHandler };
+export default errorHandler;
+// module.exports = errorHandler;

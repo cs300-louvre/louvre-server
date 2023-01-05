@@ -1,4 +1,5 @@
-const express = require("express");
+// const express = require("express");
+import * as express from "express";
 
 const museumAPI = require("../../../controllers/museums.controllers");
 const auth = require("../../../middlewares/auth");

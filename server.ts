@@ -1,9 +1,17 @@
-const express = require("express");
-const colors = require("colors");
-const dotenv = require("dotenv");
-const bodyParser = require("body-parser");
-const cookieParser = require("cookie-parser");
-const errorHandler = require("./middlewares/errorHandler");
+// const express = require("express");
+// const dotenv = require("dotenv");
+// const bodyParser = require("body-parser");
+// const cookieParser = require("cookie-parser");
+// const errorHandler = require("./middlewares/errorHandler");
+// const mongoose = require("mongoose");
+
+import express from "express";
+import * as dotenv from "dotenv";
+import mongoose from "mongoose";
+import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
+import errorHandler from "./middlewares/errorHandler";
+import "colorts/lib/string";
 
 const conncetDB = require("./config/db");
 
@@ -11,6 +19,7 @@ const conncetDB = require("./config/db");
 dotenv.config({ path: "./.env" });
 
 // Connect to database
+mongoose.set("strictQuery", false);
 conncetDB();
 
 // Route files
@@ -33,5 +42,5 @@ app.use(errorHandler);
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
-  console.log(`Server running on port ${port}`.yellow.bold);
+  console.log(`⚡️[server]: Server running on port ${port}`.yellow.bold);
 });
