@@ -77,7 +77,7 @@ exports.createMuseum = asyncHandler(
     next: any
   ) => {
     // Add user to req.body
-    req.body.userId = req.user.id;
+    req.body.userId = req.user.id || req.user.userId || req.user._id;
 
     const museum: IMuseumResponse | null = await Museum.create(req.body);
 

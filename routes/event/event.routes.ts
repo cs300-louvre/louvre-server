@@ -1,0 +1,16 @@
+// const express = require("express");
+import * as express from "express";
+
+const eventAPI = require("../../controllers/event.controllers");
+const auth = require("../../middlewares/auth");
+
+// Router with mergeParams: true to access params from parent router
+const router = express.Router({ mergeParams: true });
+
+router.route("/").get(auth.verifyTokenChill, eventAPI.getEvents);
+
+router.route("/").post(auth.verifyToken, eventAPI.createEvent);
+
+router.route("/:id").get(auth.verifyTokenChill, eventAPI.getEvent);
+
+module.exports = router;

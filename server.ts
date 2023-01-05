@@ -20,6 +20,7 @@ const users = require("./routes/users/users.routes");
 const museums = require("./routes/museums/museums.routes");
 const browse = require("./routes/browse/browse.routes");
 const me = require("./routes/me/me.routes");
+const event = require("./routes/event/event.routes");
 
 // Initialize express
 const app = express();
@@ -32,6 +33,7 @@ app.use("/users", users);
 app.use("/museum", museums);
 app.use("/browse", browse);
 app.use("/me", me);
+app.use("/event", event);
 
 // Error handler/catcher middleware
 app.use(errorHandler);
@@ -39,5 +41,5 @@ app.use(errorHandler);
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
-  console.log(`⚡️[server]: Server running on port ${port}`.yellow.bold);
+  console.log(`⚡️ [Server]: Server running on port ${port}`.yellow.bold);
 });

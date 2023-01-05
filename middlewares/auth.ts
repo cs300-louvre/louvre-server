@@ -14,7 +14,12 @@ interface JwtPayload {
 
 // verifyToken
 exports.verifyToken = asyncHandler(
-  async (req: RequestWithUser, res: Response, next: any) => {
+  async (
+    req: RequestWithUser,
+    res: Response,
+    next: any,
+    strict: boolean = true
+  ) => {
     let token;
 
     if (
@@ -33,9 +38,14 @@ exports.verifyToken = asyncHandler(
 
     // Make sure token exists
     if (!token) {
-      return next(
-        new ErrorResponse("Not authorized to access this route", 401)
-      );
+      if (strict) {
+        return next(
+          new ErrorResponse("Not authorized to access this route", 401)
+        );
+      } else {
+        req.user = null;
+        next();
+      }
     }
 
     const decodedToken = jwt.verify(token, config.JWT_SECRET) as JwtPayload;
@@ -44,5 +54,11 @@ exports.verifyToken = asyncHandler(
     req.user = await User.findById(decodedToken.id);
 
     next();
+  }
+);
+
+exports.verifyTokenChill = asyncHandler(
+  async (req: RequestWithUser, res: Response, next: any) => {
+    return exports.verifyToken(req, res, next, false);
   }
 );
