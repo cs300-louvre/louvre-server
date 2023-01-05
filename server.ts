@@ -16,8 +16,8 @@ mongoose.set("strictQuery", false);
 conncetDB();
 
 // Route files
-const users = require("./routes/api/users/users.routes");
-const museums = require("./routes/api/museums/museums.routes");
+const users = require("./routes/users/users.routes");
+const museums = require("./routes/museums/museums.routes");
 const browse = require("./routes/browse/browse.routes");
 
 // Initialize express
@@ -27,8 +27,8 @@ app.use(bodyParser.json()); // Body (json) parser
 app.use(cookieParser()); // Cookie parser
 
 // Mount routers
-app.use("/api/users", users);
-app.use("/api/museums", museums);
+app.use("/users", users);
+app.use("/museums", museums);
 app.use("/browse", browse);
 
 // Error handler/catcher middleware
