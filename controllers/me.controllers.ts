@@ -1,3 +1,4 @@
+import { IRatingResponse, ISignInResponse, ITicketResponse } from './../types';
 import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 
@@ -9,12 +10,12 @@ import {
   IFollowedEvent,
   IMuseumResponse,
   IEventResponse,
-  IRatingResponse,
 } from "../types";
 import Follow, { IFollowSchema } from "../models/Follow";
 import Museum from "../models/Museum";
 import Event from "../models/Event";
-import Rating, { IRatingSchema } from "../models/Rating";
+import Rating, { IRatingSchema } from '../models/Rating';
+import Ticket from '../models/Ticket';
 
 // @desc    Get current logged in user
 // @route   GET /me
@@ -185,3 +186,24 @@ exports.getRatings = asyncHandler(
     res.status(200).json({ data: ratings });
   }
 );
+
+// @desc    Get my tickets
+// @route   GET /me/ticket
+// @access  Private
+exports.getMyTickets = asyncHandler( 
+  async (req: RequestWithUser, res: Response, next: any) => {
+    const tickets: ITicketResponse[] = await Ticket.find({
+      userId: req.user.userId || req.user._id,
+    }).populate({
+      path: "ticket",
+      model: "Ticket ",
+      select: "name thumbnailUrl location status",
+    });
+    res.status(200).json({ data: tickets });
+  }
+);
+
+// @desc    Purchase ticket
+// @route   Post /me/ticket?type=${type}&eomId=${eomId}
+// @access  Private
+// Anh Nam oiw cuu em =))) hong biem lam =))

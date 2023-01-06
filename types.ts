@@ -125,7 +125,6 @@ export type IMuseumGenre =
   | "virtual";
 
 export type IMuseumCoreData = {
-  userId: any;
   name: string;
   thumbnailBase64: string;
   coverBase64: string;
