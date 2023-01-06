@@ -5,6 +5,7 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import errorHandler from "./middlewares/errorHandler";
 import "colorts/lib/string";
+import morgan from "morgan";
 
 const conncetDB = require("./config/db");
 
@@ -27,6 +28,7 @@ const app = express();
 
 app.use(bodyParser.json()); // Body (json) parser
 app.use(cookieParser()); // Cookie parser
+app.use(morgan("dev")); // Logger
 
 // Mount routers
 app.use("/users", users);
