@@ -2,8 +2,6 @@ import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 
 import { RequestWithUser } from "../utils/requestWithUser";
-import sanitizedConfig from "../config/config";
-import ErrorResponse from "../utils/errorResponse";
 
 import {
   IGetMeResponse,
@@ -103,7 +101,6 @@ exports.getFollowedMuseums = asyncHandler(
     });
 
     const museums: IFollowedMuseum[] = followedMuseums.map((follow) => {
-      console.log(follow);
       return {
         museumId: follow.museum.museumId,
         name: follow.museum.name,
