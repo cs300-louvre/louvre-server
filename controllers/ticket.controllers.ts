@@ -12,9 +12,41 @@ import {
   GenericRequestWithUser,
 } from "../utils/requestWithUser";
 
-//export const getTicketById = (ticketId) =>
-//API.get<ITicketResponse>(`/ticket/${ticketId}`);
+// @desc    Get ticket by id
+// @route   GET /ticket/:ticketId
+// @access  Public
+exports.getTicketById = asyncHandler(
+  async (req: RequestWithUser, res: Response, next: any) => {
+    const ticket = await Ticket.findById(req.params.id);
+
+    if (!ticket) {
+      return next(
+        new ErrorResponse(`Ticket not found with id of ${req.params.id}`, 404)
+      );
+    }
+
+    res.status(200).json({ data: ticket });
+  }
+);
 
 
-// export const checkIn = (ticketId: string) =>
-//   API.put(`/ticket/${ticketId}/checkin`);
+// @desc    Check in ticket
+// @route   PUT /ticket/:ticketId/checkin
+// @access  Private
+
+exports.checkIn = asyncHandler(
+  async (req: RequestWithUser, res: Response, next: any) => {
+    const ticket = await Ticket.findById(req.params.id);
+
+    if (!ticket) {
+      return next(
+        new ErrorResponse(`Ticket not found with id of ${req.params.id}`, 404)
+      );
+    }
+    
+    ticket.status = "used";
+    await ticket.save();
+
+    res.status(200).json({ data: ticket });
+  }
+);
