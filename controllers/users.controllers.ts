@@ -75,7 +75,8 @@ const sendTokenInResponse = (user: any, statusCode: number, res: Response) => {
     secure: process.env.NODE_ENV === "production", // Cookie will only be sent on an encrypted connection
   };
 
-  res.status(statusCode).cookie("token", token, option).json({
+  // res.status(statusCode).cookie("token", token, option).json({
+  res.status(statusCode).json({
     success: true,
     token,
   });
