@@ -24,6 +24,8 @@ const museums = require("./routes/museums/museums.routes");
 const browse = require("./routes/browse/browse.routes");
 const me = require("./routes/me/me.routes");
 const event = require("./routes/event/event.routes");
+const ticket = require("./routes/ticket/ticket.routes");
+
 
 // Initialize express
 const app = express();
@@ -41,6 +43,7 @@ app.use("/museum", museums);
 app.use("/browse", browse);
 app.use("/me", me);
 app.use("/event", event);
+app.use("/ticket", event);
 
 // Error handler/catcher middleware
 app.use(errorHandler);
