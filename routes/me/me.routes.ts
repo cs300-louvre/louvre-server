@@ -18,4 +18,6 @@ router
   .get(auth.verifyToken, meAPI.getFollowedEvents)
   .put(auth.verifyToken, meAPI.followEvent);
 
+router.route("/rating").get(auth.verifyToken, meAPI.getRatings);
+
 module.exports = router;

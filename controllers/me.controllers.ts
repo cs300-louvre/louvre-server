@@ -9,10 +9,12 @@ import {
   IFollowedEvent,
   IMuseumResponse,
   IEventResponse,
+  IRatingResponse,
 } from "../types";
 import Follow, { IFollowSchema } from "../models/Follow";
 import Museum from "../models/Museum";
 import Event from "../models/Event";
+import Rating, { IRatingSchema } from "../models/Rating";
 
 // @desc    Get current logged in user
 // @route   GET /me
@@ -137,5 +139,49 @@ exports.getFollowedEvents = asyncHandler(
     });
 
     res.status(200).json({ data: events });
+  }
+);
+
+// @desc    Get my rating
+// @route   GET /me/rating
+// @access  Private
+exports.getRatings = asyncHandler(
+  async (req: RequestWithUser, res: Response, next: any) => {
+    const myRatings: IRatingSchema[] = await Rating.find({
+      userId: req.user.userId || req.user._id.toString(),
+    })
+      .populate({
+        path: "event",
+        model: "Event",
+        select: "thumbnailUrl",
+      })
+      .populate({
+        path: "museum",
+        model: "Museum",
+        select: "thumbnailUrl",
+      });
+
+    const ratings: any[] = myRatings.map((rating) => {
+      let curThumbnailUrl = "";
+
+      if (rating.IEOM === "event") {
+        curThumbnailUrl = rating.event.thumbnailUrl;
+      } else if (rating.IEOM === "museum") {
+        curThumbnailUrl = rating.museum.thumbnailUrl;
+      }
+
+      return {
+        ratingId: rating.ratingId,
+        userId: rating.userId,
+        eomId: rating.eomId,
+        thumbnailUrl: curThumbnailUrl,
+        rating: rating.rating,
+        content: rating.content,
+        userName: rating.userName,
+        createdAt: rating.createdAt,
+      } as IRatingResponse;
+    });
+
+    res.status(200).json({ data: ratings });
   }
 );
