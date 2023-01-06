@@ -41,7 +41,8 @@ export type ITicketStatus = "wait" | "paid" | "used";
 export type ITicketResponse = {
   ticketId: string;
   userId: string;
-  eomId: string;
+  eventId?: string;
+  museumId: string; // MuseumID of event of of museum of the ticket
   purchasedAt: string;
   thumbnailUrl: string; // Get the thumbnail of the museum or the event that sells this ticket
   name: string;
@@ -49,20 +50,21 @@ export type ITicketResponse = {
   location: string;
   startTime?: string; // If museum entrance ticket then there is no start or end time
   endTime?: string;
+  qrCodeUrl?: string;
   status: ITicketStatus;
 };
 
 export type IEOM = "event" | "museum";
 
 export type IRatingCoreData = {
-  museumId: string;
+  eomId: string;
   rating: number;
   content: string;
 };
 export type IRatingResponse = {
   ratingId: string;
   userId: string;
-  museumId: string;
+  eomId: string;
   thumbnailUrl: string; // the thumbnail of the user who rate
   rating: number;
   content: string;
@@ -124,7 +126,6 @@ export type IMuseumCoreData = {
   ticketPrice: number;
   location: string;
   description: string;
-  userId?: string | null; // userId của người quản lí museum
 };
 export type IMuseumResponse = {
   name: string;
