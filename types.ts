@@ -126,6 +126,7 @@ export type IMuseumCoreData = {
   ticketPrice: number;
   location: string;
   description: string;
+  userId?: string; // userId của người quản lí museum
 };
 export type IMuseumResponse = {
   name: string;
