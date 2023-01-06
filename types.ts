@@ -56,6 +56,12 @@ export type ITicketResponse = {
 
 export type IEOM = "event" | "museum";
 
+export type ITicketCoreData = {
+  eomId: string;
+  userId: string;
+  eventId?: string;
+}
+
 export type IRatingCoreData = {
   eomId: string;
   rating: number;
@@ -119,6 +125,7 @@ export type IMuseumGenre =
   | "virtual";
 
 export type IMuseumCoreData = {
+  userId: any;
   name: string;
   thumbnailBase64: string;
   coverBase64: string;
