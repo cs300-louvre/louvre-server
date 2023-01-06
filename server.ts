@@ -6,6 +6,8 @@ import cookieParser from "cookie-parser";
 import errorHandler from "./middlewares/errorHandler";
 import "colorts/lib/string";
 import morgan from "morgan";
+import cors from "cors";
+import { appendFile } from "fs";
 
 const conncetDB = require("./config/db");
 
@@ -25,13 +27,16 @@ const event = require("./routes/event/event.routes");
 
 // Initialize express
 const app = express();
-
+app.use(cors());
 app.use(bodyParser.json()); // Body (json) parser
 app.use(cookieParser()); // Cookie parser
 app.use(morgan("dev")); // Logger
 
 // Mount routers
-app.use("/users", users);
+app.get("/", (req, res) => {
+  res.status(200).send({ message: "Server is online!" });
+});
+app.use("/user", users);
 app.use("/museum", museums);
 app.use("/browse", browse);
 app.use("/me", me);
