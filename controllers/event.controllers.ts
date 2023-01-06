@@ -26,12 +26,12 @@ exports.getEvents = asyncHandler(
 
     if (req.query.genre) {
       query.genre = { $regex: req.query.genre, $options: "i" };
-    } 
+    }
 
     if (req.params.museumId) {
       query.museumId = req.params.museumId;
     }
-    
+
     events = await Event.find(query);
 
     // sort by createdAt
@@ -46,9 +46,7 @@ exports.getEvents = asyncHandler(
       }
     }
 
-    res.status(200).json({
-      data: events as IMuseumResponse[] | null,
-    });
+    res.status(200).json(events);
   }
 );
 
@@ -79,9 +77,7 @@ exports.createEvent = asyncHandler(
       museumName: museum.name,
     });
 
-    res.status(201).json({
-      data: event,
-    });
+    res.status(201).json(event);
   }
 );
 
@@ -102,8 +98,6 @@ exports.getEvent = asyncHandler(
       }
     }
 
-    res.status(200).json({
-      data: event as IMuseumResponse,
-    });
+    res.status(200).json(event);
   }
 );

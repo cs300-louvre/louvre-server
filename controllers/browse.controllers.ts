@@ -35,6 +35,6 @@ exports.getBrowseMuseums = asyncHandler(
     // Flatten the array of museums
     const data = filteredMuseums.flat();
 
-    res.status(200).json({ museums: data });
+    res.status(200).json(data);
   }
 );

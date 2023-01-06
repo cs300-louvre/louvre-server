@@ -34,11 +34,7 @@ exports.getMuseums = asyncHandler(
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
 
-    res.status(200).json({
-      success: true,
-      count: museums.length,
-      data: museums,
-    });
+    res.status(200).json(museums);
   }
 );
 
@@ -60,10 +56,7 @@ exports.getMuseum = asyncHandler(
       );
     }
 
-    res.status(200).json({
-      success: true,
-      data: museum,
-    });
+    res.status(200).json(museum);
   }
 );
 
@@ -81,7 +74,7 @@ exports.createMuseum = asyncHandler(
 
     const museum: IMuseumResponse | null = await Museum.create(req.body);
 
-    res.status(200).json({ success: true, data: museum });
+    res.status(200).json(museum);
   }
 );
 
@@ -126,6 +119,6 @@ exports.updateMuseum = asyncHandler(
       }
     );
 
-    res.status(200).json({ success: true, data: query });
+    res.status(200).json(query);
   }
 );

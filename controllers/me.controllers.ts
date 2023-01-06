@@ -1,4 +1,4 @@
-import { IRatingResponse, ISignInResponse, ITicketResponse } from './../types';
+import { IRatingResponse, ISignInResponse, ITicketResponse } from "./../types";
 import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 
@@ -14,8 +14,8 @@ import {
 import Follow, { IFollowSchema } from "../models/Follow";
 import Museum from "../models/Museum";
 import Event from "../models/Event";
-import Rating, { IRatingSchema } from '../models/Rating';
-import Ticket from '../models/Ticket';
+import Rating, { IRatingSchema } from "../models/Rating";
+import Ticket from "../models/Ticket";
 
 // @desc    Get current logged in user
 // @route   GET /me
@@ -30,7 +30,7 @@ exports.getMe = asyncHandler(
       thumbnailUrl: req.user.thumbnailUrl,
     };
 
-    res.status(200).json({ data: me });
+    res.status(200).json(me);
   }
 );
 
@@ -112,7 +112,7 @@ exports.getFollowedMuseums = asyncHandler(
       } as IFollowedMuseum;
     });
 
-    res.status(200).json({ data: museums });
+    res.status(200).json(museums);
   }
 );
 
@@ -139,7 +139,7 @@ exports.getFollowedEvents = asyncHandler(
       } as IFollowedEvent;
     });
 
-    res.status(200).json({ data: events });
+    res.status(200).json(events);
   }
 );
 
@@ -183,14 +183,14 @@ exports.getRatings = asyncHandler(
       } as IRatingResponse;
     });
 
-    res.status(200).json({ data: ratings });
+    res.status(200).json(ratings);
   }
 );
 
 // @desc    Get my tickets
 // @route   GET /me/ticket
 // @access  Private
-exports.getMyTickets = asyncHandler( 
+exports.getMyTickets = asyncHandler(
   async (req: RequestWithUser, res: Response, next: any) => {
     const tickets: ITicketResponse[] = await Ticket.find({
       userId: req.user.userId || req.user._id,
@@ -199,7 +199,7 @@ exports.getMyTickets = asyncHandler(
       model: "Ticket ",
       select: "name thumbnailUrl location status",
     });
-    res.status(200).json({ data: tickets });
+    res.status(200).json(tickets);
   }
 );
 
