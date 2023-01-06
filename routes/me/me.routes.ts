@@ -20,4 +20,9 @@ router
 
 router.route("/rating").get(auth.verifyToken, meAPI.getRatings);
 
+router
+  .route("/ticket")
+  .get(auth.verifyToken, meAPI.getMyTickets)
+
+
 module.exports = router;
