@@ -12,11 +12,6 @@ import {
   GenericRequestWithUser,
 } from "../utils/requestWithUser";
 
-// export const getMyTickets = () => API.get<ITicketResponse[]>("/me/ticket");
-
-//export const purchaseTicket = (type: IEOM, eomId: string) =>
-//API.post(`/me/ticket?type=${type}&eomId=${eomId}`);
-
 //export const getTicketById = (ticketId) =>
 //API.get<ITicketResponse>(`/ticket/${ticketId}`);
 
