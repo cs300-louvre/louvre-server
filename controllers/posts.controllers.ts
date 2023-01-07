@@ -42,24 +42,14 @@ exports.getPostsByEomId = asyncHandler(
 // @access  Private
 exports.postPost = asyncHandler(
   async (req: RequestWithUser, res: Response, next: any) => {
-    const { eomId, title, body } = req.body;
-    const { imageUrl} = req.user;
-
+    const { eomId, title, body,imageBase64, } = req.body;
     let  postPost: any = await Post.findOne({eomId});
-
-    let IEOM = "";
-    const isMuseumPost = await Museum.findById(eomId);
-    if (isMuseumPost) {
-      IEOM = "museum";
-    } else {
-      IEOM = "event";
-    }
 
     if (postPost === null) {
         postPost = await Post.create({
             title: title,
             body: body,
-            imageUrl,
+            imageBase64,
             eomId,
       });
     } else {
@@ -72,7 +62,7 @@ exports.postPost = asyncHandler(
         createdAt: postPost.createdAt,
         title: postPost.title,
         body: postPost.body,
-        imageUrl: postPost.imageUrl,
+        imageUrl: postPost.imageUrl as string,
         eomId: postPost.eomId as string,
         postId: postPost.postId,
       };

@@ -10,7 +10,6 @@ export type IPostSchema = {
     imageUrl: string;
     eomId: string;
     postId: string;
-    IEOM: "event" | "museum";
   };
 
 const PostSchema = new Schema<IPostSchema>({
