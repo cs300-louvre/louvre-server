@@ -6,7 +6,7 @@ import cookieParser from "cookie-parser";
 import errorHandler from "./middlewares/errorHandler";
 import "colorts/lib/string";
 import morgan from "morgan";
-// import cors from "cors";
+import cors from "cors";
 import { appendFile } from "fs";
 
 const conncetDB = require("./config/db");
@@ -26,11 +26,12 @@ const me = require("./routes/me/me.routes");
 const event = require("./routes/event/event.routes");
 const rating = require("./routes/rating/rating.routes");
 const ticket = require("./routes/ticket/ticket.routes");
-
+const message = require("./routes/message/message.routes");
+const conversation = require("./routes/conversation/conversation.routes");
 
 // Initialize express
 const app = express();
-// app.use(cors());
+app.use(cors());
 app.use(bodyParser.json()); // Body (json) parser
 app.use(cookieParser()); // Cookie parser
 app.use(morgan("dev")); // Logger
@@ -45,8 +46,9 @@ app.use("/browse", browse);
 app.use("/me", me);
 app.use("/event", event);
 app.use("/rating", rating);
-app.use("/ticket", event);
-
+app.use("/ticket", ticket);
+app.use("/message", message);
+app.use("/conversation", conversation);
 
 // Error handler/catcher middleware
 app.use(errorHandler);
