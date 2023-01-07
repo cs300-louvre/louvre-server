@@ -37,7 +37,6 @@ const TicketSchema = new Schema<ITicketSchema>({
     type: Number,
     default: 0,
   },
-  qrCodeUrl: { type: String, default: null },
   status: {
     type: String,
     enum: ["wait", "paid", "used"],

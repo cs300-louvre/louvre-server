@@ -270,7 +270,6 @@ exports.purchaseTicket = asyncHandler(
       museum: museumId,
       event: null,
       price: target.ticketPrice,
-      qrCodeUrl: null, /////////////////////////////////////////////////////
       status: "paid",
     };
 
