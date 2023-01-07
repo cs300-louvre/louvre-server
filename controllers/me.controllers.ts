@@ -10,12 +10,14 @@ import {
   IFollowedEvent,
   IMuseumResponse,
   IEventResponse,
+  IConversationPreviewResponse,
 } from "../types";
 import Follow, { IFollowSchema } from "../models/Follow";
-import Museum from "../models/Museum";
-import Event from "../models/Event";
 import Rating, { IRatingSchema } from "../models/Rating";
 import Ticket from "../models/Ticket";
+import Conversation from "../models/Conversation";
+import Museum from "../models/Museum";
+import Event, { IEventSchema } from "../models/Event";
 
 // @desc    Get current logged in user
 // @route   GET /me
@@ -194,16 +196,147 @@ exports.getMyTickets = asyncHandler(
   async (req: RequestWithUser, res: Response, next: any) => {
     const tickets: ITicketResponse[] = await Ticket.find({
       userId: req.user.userId || req.user._id,
-    }).populate({
-      path: "ticket",
-      model: "Ticket ",
-      select: "name thumbnailUrl location status",
+    })
+      .populate({
+        path: "museum",
+        model: "Museum",
+        select: "name thumbnailUrl location",
+      })
+      .populate({
+        path: "event",
+        model: "Event",
+        select: "name thumbnailUrl location startTime endTime",
+      });
+
+    const ticketsResponse: ITicketResponse[] = tickets.map((ticket: any) => {
+      let eventId: any = null;
+      let name: string = ticket.museum.name;
+      let thumbnailUrl: string = ticket.museum.thumbnailUrl;
+      let location: string = ticket.museum.location;
+      let startTime: any = null;
+      let endTime: any = null;
+
+      if (ticket.event) {
+        eventId = ticket.event.eventId;
+        name = ticket.event.name;
+        thumbnailUrl = ticket.event.thumbnailUrl;
+        location = ticket.event.location;
+        startTime = ticket.event.startTime;
+        endTime = ticket.event.endTime;
+      }
+
+      return {
+        ticketId: ticket.ticketId,
+        userId: ticket.userId,
+        eventId: eventId,
+        museumId: ticket.museum.museumId,
+        purchasedAt: ticket.createdAt,
+        thumbnailUrl: thumbnailUrl,
+        name: name,
+        price: ticket.price,
+        location: location,
+        startTime: startTime,
+        endTime: endTime,
+        status: ticket.status,
+      } as ITicketResponse;
     });
-    res.status(200).json(tickets);
+
+    res.status(200).json(ticketsResponse);
   }
 );
 
 // @desc    Purchase ticket
 // @route   Post /me/ticket?type=${type}&eomId=${eomId}
 // @access  Private
-// Anh Nam oiw cuu em =))) hong biem lam =))
+exports.purchaseTicket = asyncHandler(
+  async (req: RequestWithUser, res: Response, next: any) => {
+    const userId = req.user.userId || req.user._id;
+    const type = req.query.type as string;
+    const eomId = req.query.eomId as string;
+
+    let museumId: string = "";
+    let target: any = null;
+
+    if (type === "event") {
+      target = await Event.findOne({ eventId: eomId });
+      museumId = target.museumId;
+    } else if (type === "museum") {
+      museumId = eomId;
+      target = await Museum.findOne({ museumId: eomId });
+    }
+
+    const query = {
+      userId: userId,
+      museum: museumId,
+      event: null,
+      price: target.ticketPrice,
+      qrCodeUrl: null, /////////////////////////////////////////////////////
+      status: "paid",
+    };
+
+    if (type === "event") {
+      query.event = target._id;
+    }
+
+    const ticket = await Ticket.create(query);
+
+    res.status(200).json(ticket);
+  }
+);
+
+// @desc    Get my conversation previews
+// @route   GET /me/conversation_notification
+// @access  Private
+exports.getConversationPreviews = asyncHandler(
+  async (req: RequestWithUser, res: Response, next: any) => {
+    const userId = req.user.userId || req.user._id;
+
+    const conversations = await Conversation.find({
+      $or: [{ userId1: userId }, { userId2: userId }],
+    })
+      .populate({
+        path: "userId1",
+        model: "User",
+        select: "name thumbnailUrl userId",
+      })
+      .populate({
+        path: "userId2",
+        model: "User",
+        select: "name thumbnailUrl userId",
+      });
+
+    const conversationPreviews: IConversationPreviewResponse[] =
+      conversations.map((conversation) => {
+        let sender: any = conversation.lastMessageBy;
+        let receiver: any | null = null;
+        let otherUser: any | null = null;
+
+        // Get sender and receiver of last message
+        if (conversation.userId1.userId === sender) {
+          sender = conversation.userId1;
+          receiver = conversation.userId2;
+        } else {
+          sender = conversation.userId2;
+          receiver = conversation.userId1;
+        }
+
+        // Get other user in conversation
+        if (conversation.userId1.userId === userId) {
+          otherUser = conversation.userId2;
+        } else {
+          otherUser = conversation.userId1;
+        }
+
+        return {
+          conversationId: conversation.conversationId,
+          name: sender.name,
+          content: conversation.lastMessage,
+          userId: otherUser.userId,
+          thumbnailUrl: otherUser.thumbnailUrl,
+          sentAt: conversation.lastMessageAt,
+        } as IConversationPreviewResponse;
+      });
+
+    res.status(200).json(conversationPreviews);
+  }
+);
