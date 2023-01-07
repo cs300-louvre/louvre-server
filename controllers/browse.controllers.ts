@@ -2,8 +2,8 @@ import { Response, Request } from "express";
 import asyncHandler from "express-async-handler";
 
 import Museum from "../models/Museum";
-import ErrorResponse from "../utils/errorResponse";
-import type { IMuseumResponse } from "../types";
+import Event from "../models/Event";
+import type { IMuseumResponse, IEventResponse } from "../types";
 
 // @desc    Get all museums with at most 3 museums per genres
 // @route   GET /browse/museum
@@ -34,6 +34,40 @@ exports.getBrowseMuseums = asyncHandler(
 
     // Flatten the array of museums
     const data = filteredMuseums.flat();
+
+    res.status(200).json(data);
+  }
+);
+
+// @desc    Get all events with at most 3 events per genres
+// @route   GET /browse/event
+// @access  Public
+exports.getBrowseEvents = asyncHandler(
+  async (req: Request, res: Response, next: any) => {
+    // Fetch all events from the API
+    const events = await Event.find();
+
+    // sort events by createdAt (timestamp string), newest first
+    events.sort((a, b) => {
+      return parseInt(b.createdAt) - parseInt(a.createdAt);
+    });
+
+    // Group the events by genre
+    const eventsByGenre = events.reduce((acc, event) => {
+      acc[event.genre] = acc[event.genre] || [];
+      acc[event.genre].push(event);
+      return acc;
+    }, {} as { [genre: string]: IEventResponse[] });
+
+    // Keep at most 3 events for each genre
+    const filteredEvents = Object.entries(eventsByGenre).map(
+      ([genre, events]) => {
+        return events.slice(0, 3);
+      }
+    );
+
+    // Flatten the array of events
+    const data = filteredEvents.flat();
 
     res.status(200).json(data);
   }

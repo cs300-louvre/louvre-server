@@ -8,4 +8,6 @@ const router = express.Router();
 
 router.route("/museum").get(browseAPI.getBrowseMuseums);
 
+router.route("/event").get(browseAPI.getBrowseEvents);
+
 module.exports = router;
