@@ -59,8 +59,7 @@ export type IEOM = "event" | "museum";
 export type ITicketCoreData = {
   eomId: string;
   userId: string;
-  eventId?: string;
-}
+};
 
 export type IRatingCoreData = {
   eomId: string;
