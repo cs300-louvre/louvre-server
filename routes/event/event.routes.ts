@@ -13,4 +13,6 @@ router.route("/").post(auth.verifyToken, eventAPI.createEvent);
 
 router.route("/:eventId").get(auth.verifyTokenChill, eventAPI.getEvent);
 
+router.route("/:eventId").patch(auth.verifyToken, eventAPI.updateEvent);
+
 module.exports = router;
