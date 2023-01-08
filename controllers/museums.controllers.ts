@@ -15,7 +15,7 @@ import {
 // Declare a custom type for the request object
 
 // @desc    Get all museums
-// @route   GET /museums
+// @route   GET /museum
 // @access  Public
 exports.getMuseums = asyncHandler(
   async (req: Request, res: Response, next: any) => {
@@ -39,9 +39,9 @@ exports.getMuseums = asyncHandler(
 );
 
 // @desc    Get single museum by id or slug
-// @route   GET /museums/:id
+// @route   GET /museum/:id
 // @access  Public
-exports.getMuseum = asyncHandler(
+exports.getMuseumById = asyncHandler(
   async (req: Request, res: Response, next: any) => {
     const museum: IMuseumResponse | null = await Museum.findOne({
       museumId: req.params.id,
@@ -60,8 +60,30 @@ exports.getMuseum = asyncHandler(
   }
 );
 
+// @desc    Get single museum by userId (manager)
+// @route   GET /museum?userId=
+// @access  Public
+exports.getMuseumByUserId = asyncHandler(
+  async (req: Request, res: Response, next: any) => {
+    const museum: IMuseumResponse | null = await Museum.findOne({
+      userId: req.query.userId,
+    });
+
+    if (!museum) {
+      return next(
+        new ErrorResponse(
+          `Museum not found with user id of ${req.query.userId}`,
+          404
+        )
+      );
+    }
+
+    res.status(200).json(museum);
+  }
+);
+
 // @desc    Create new museum
-// @route   POST /api/museums
+// @route   POST /museum
 // @access  Private
 exports.createMuseum = asyncHandler(
   async (
@@ -79,7 +101,7 @@ exports.createMuseum = asyncHandler(
 );
 
 // @desc    Update museum by id or slug
-// @route   PUT /api/museums/:id
+// @route   PATCH /museum/:museumId
 // @access  Private
 exports.updateMuseum = asyncHandler(
   async (
@@ -89,7 +111,7 @@ exports.updateMuseum = asyncHandler(
   ) => {
     // Find museum by id
     const museum: IMuseumResponse | null = await Museum.findOne({
-      museumId: req.params.id.toString(),
+      museumId: req.params.museumId,
     });
 
     // Check museum existence
