@@ -2,9 +2,11 @@ import { Response, Request } from "express";
 import asyncHandler from "express-async-handler";
 import ErrorResponse from "../utils/errorResponse";
 
-import { RequestWithUser } from "../utils/requestWithUser";
 import Message from "../models/Message";
+import Conversation from "../models/Conversation";
 import { IMessageResponse } from "../types";
+import { RequestWithUser } from "../utils/requestWithUser";
+import { parseConversationId } from "../utils/getConversationId";
 
 // @desc    Get all messages from conversation id
 // @route   GET /message?conversationId=
@@ -51,6 +53,20 @@ exports.createMessage = asyncHandler(
       throw new Error("Conversation id is required");
     }
 
+    let conversation = await Conversation.findOne({
+      conversationId: conversationId,
+    });
+
+    if (!conversation) {
+      // Parse conversationId to get userId1 and userId2
+      const [userId1, userId2] = parseConversationId(conversationId);
+      conversation = await Conversation.create({
+        conversationId: conversationId,
+        userId1: userId1,
+        userId2: userId2,
+      });
+    }
+
     const newMessage = await Message.create({
       conversationId: conversationId,
       userId: req.user._id,
@@ -62,6 +78,13 @@ exports.createMessage = asyncHandler(
     if (!newMessage) {
       throw new ErrorResponse("Message could not be created", 500);
     }
+
+    // Update conversation
+    conversation.updatedAt = newMessage.sentAt;
+    conversation.lastMessage = content;
+    conversation.lastMessageAt = newMessage.sentAt;
+    conversation.lastMessageBy = req.user._id;
+    conversation.save(); // Don't need to await here
 
     res.status(201).json(newMessage);
   }
