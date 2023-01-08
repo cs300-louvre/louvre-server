@@ -1,6 +1,6 @@
 import { Schema, model, connect, Types } from "mongoose";
 
-import { IMessageResponse } from "../types";
+import { getConversationId } from "../utils/getConversationId";
 
 export type IConversationSchema = {
   conversationId: string;
@@ -33,7 +33,7 @@ const ConversationSchema = new Schema<IConversationSchema>({
   },
   updatedAt: {
     type: String,
-    default: Date.now().toString(),
+    default: null,
   },
   lastMessage: {
     type: String,
@@ -49,13 +49,12 @@ const ConversationSchema = new Schema<IConversationSchema>({
   },
 });
 
-// Create ticketId
-ConversationSchema.pre("save", async function () {
-  if (this.conversationId) {
-    return;
+// Create conversation id from userId1 and userId2
+ConversationSchema.pre("save", async function (next) {
+  if (!this.conversationId) {
+    this.conversationId = getConversationId(this.userId1, this.userId2);
   }
-  this.conversationId = this._id.toString();
-  this.save();
+  next();
 });
 
 export default model<IConversationSchema>("Conversation", ConversationSchema);

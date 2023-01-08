@@ -101,3 +101,41 @@ exports.getEvent = asyncHandler(
     res.status(200).json(event);
   }
 );
+
+// @desc    Update an event
+// @route   PATCH /event/:eventId
+// @access  Private
+exports.updateEvent = asyncHandler(
+  async (
+    req: GenericRequestWithUser<any, {}, IEventCoreData, {}>,
+    res: Response,
+    next: any
+  ) => {
+    const event: any | null = await Event.findById(req.params.eventId);
+
+    if (!event) {
+      return next(
+        new ErrorResponse(
+          `Event not found with id of ${req.params.eventId}`,
+          404
+        )
+      );
+    }
+
+    // check if user is the owner of the event
+    if (event.userId.toString() !== req.user._id.toString()) {
+      return next(
+        new ErrorResponse(
+          `User ${req.user._id} is not authorized to update this event`,
+          401
+        )
+      );
+    }
+
+    event.set(req.body);
+
+    await event.save();
+
+    res.status(200).json(event);
+  }
+);
