@@ -169,6 +169,7 @@ export type IEventCoreData = {
   ticketPrice: number;
   startTime: string;
   endTime: string;
+  userId?: string; // userId của người quản lí museum
 };
 export type IEventResponse = {
   genre: IEventGenre;

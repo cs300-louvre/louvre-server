@@ -132,6 +132,8 @@ exports.updateEvent = asyncHandler(
       );
     }
 
+    req.body.userId = req.user.id || req.user.userId || req.user._id;
+
     event.set(req.body);
 
     await event.save();

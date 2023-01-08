@@ -131,6 +131,8 @@ exports.updateMuseum = asyncHandler(
       );
     }
 
+    req.body.userId = req.user.id || req.user.userId || req.user._id;
+
     // Update museum
     const query: IMuseumResponse | null = await Museum.findOneAndUpdate(
       { museumId: museum.museumId },
