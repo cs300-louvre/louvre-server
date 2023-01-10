@@ -1,8 +1,7 @@
+const User = require("../models/User");
 import { IRatingResponse, ISignInResponse, ITicketResponse } from "./../types";
 import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
-
-import { RequestWithUser } from "../utils/requestWithUser";
 
 import {
   IGetMeResponse,
@@ -12,12 +11,15 @@ import {
   IEventResponse,
   IConversationPreviewResponse,
 } from "../types";
+
 import Follow, { IFollowSchema } from "../models/Follow";
 import Rating, { IRatingSchema } from "../models/Rating";
 import Ticket from "../models/Ticket";
 import Conversation from "../models/Conversation";
 import Museum from "../models/Museum";
 import Event, { IEventSchema } from "../models/Event";
+import ErrorResponse from "../utils/errorResponse";
+import { RequestWithUser } from "../utils/requestWithUser";
 
 // @desc    Get current logged in user
 // @route   GET /me
@@ -337,5 +339,29 @@ exports.getConversationPreviews = asyncHandler(
       });
 
     res.status(200).json(conversationPreviews);
+  }
+);
+
+// @desc    Change user password
+// @route   POST /users/change_password
+// @access  Private
+exports.changePassword = asyncHandler(
+  async (req: RequestWithUser, res: Response, next: any) => {
+    const { currentPassword, newPassword } = req.body;
+
+    const user = await User.findById(req.user.id).select("+password");
+    const isMatch = await user.comparePassword(currentPassword);
+
+    if (!isMatch) {
+      return next(new ErrorResponse("Incorrect password", 401));
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      data: {},
+    });
   }
 );
