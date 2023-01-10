@@ -73,6 +73,8 @@ exports.createEvent = asyncHandler(
 
     const event = await Event.create({
       ...req.body,
+      thumbnailUrl: req.body.thumbnailBase64,
+      coverUrl: req.body.coverBase64,
       userId: req.user._id,
       museumId: museum.museumId,
       museumName: museum.name,
