@@ -145,3 +145,40 @@ exports.updateEvent = asyncHandler(
     res.status(200).json(event);
   }
 );
+
+// @desc    Delete an event
+// @route   DELETE /event/:eventId
+// @access  Private
+exports.deleteEvent = asyncHandler(
+  async (req: RequestWithUser, res: Response, next: any) => {
+    const event: any | null = await Event.findOne({
+      eventId: req.params.eventId,
+    });
+
+    if (!event) {
+      return next(
+        new ErrorResponse(
+          `Event not found with id of ${req.params.eventId}`,
+          404
+        )
+      );
+    }
+
+    // check if user is the owner of the event
+    if (
+      event.userId.toString() !== req.user._id.toString() &&
+      req.user.role !== "admin"
+    ) {
+      return next(
+        new ErrorResponse(
+          `User ${req.user._id} is not authorized to delete this event`,
+          401
+        )
+      );
+    }
+
+    await event.remove();
+
+    res.status(200).json({});
+  }
+);

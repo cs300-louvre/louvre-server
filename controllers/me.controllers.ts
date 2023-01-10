@@ -98,22 +98,22 @@ exports.followEvent = asyncHandler(
 // @access  Private
 exports.getFollowedMuseums = asyncHandler(
   async (req: RequestWithUser, res: Response, next: any) => {
-    const followedMuseums: IFollowSchema[] = await Follow.find({
+    const followedMuseums: any = await Follow.find({
       userId: req.user.userId || req.user._id,
       museum: { $ne: null },
-    }).populate({
-      path: "museum",
-      model: "Museum",
-      select: "name thumbnailUrl rating museumId",
-    });
+    })
+      .lean()
+      .populate({
+        path: "museum",
+        model: "Museum",
+        // select all attributes
+        select: "-__v",
+      });
 
-    const museums: IFollowedMuseum[] = followedMuseums.map((follow) => {
+    const museums: IMuseumResponse[] = followedMuseums.map((follow: any) => {
       return {
-        museumId: follow.museum.museumId,
-        name: follow.museum.name,
-        thumbnailUrl: follow.museum.thumbnailUrl,
-        rating: follow.museum.rating as number,
-      } as IFollowedMuseum;
+        ...follow.museum,
+      } as IMuseumResponse;
     });
 
     res.status(200).json(museums);
@@ -128,19 +128,17 @@ exports.getFollowedEvents = asyncHandler(
     const followedEvents: IFollowSchema[] = await Follow.find({
       userId: req.user.userId || req.user._id,
       event: { $ne: null },
-    }).populate({
-      path: "event",
-      model: "Event",
-      select: "name thumbnailUrl rating eventId",
-    });
+    })
+      .lean()
+      .populate({
+        path: "event",
+        model: "Event",
+      });
 
-    const events: IFollowedEvent[] = followedEvents.map((follow) => {
+    const events: IEventResponse[] = followedEvents.map((follow) => {
       return {
-        eventId: follow.event.eventId,
-        name: follow.event.name,
-        thumbnailUrl: follow.event.thumbnailUrl,
-        rating: follow.event.rating as number,
-      } as IFollowedEvent;
+        ...follow.event,
+      } as IEventResponse;
     });
 
     res.status(200).json(events);
