@@ -6,7 +6,6 @@ import Conversation from "./Conversation";
 const MessageSchema = new Schema<IMessageResponse>({
   conversationId: {
     type: String,
-    unique: true,
     index: true,
     ref: "Conversation",
   },

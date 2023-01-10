@@ -49,7 +49,7 @@ const MuseumSchema = new Schema<IMuseumResponse>({
   rating: {
     type: Number,
     min: [1, "Rating must be at least 1"],
-    max: [10, "Rating must can not be more than 10"],
+    max: [5, "Rating must can not be more than 5"],
     default: 1,
   },
   createdAt: String,
