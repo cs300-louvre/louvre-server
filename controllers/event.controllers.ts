@@ -124,7 +124,10 @@ exports.updateEvent = asyncHandler(
     }
 
     // check if user is the owner of the event
-    if (event.userId.toString() !== req.user._id.toString()) {
+    if (
+      event.userId.toString() !== req.user._id.toString() &&
+      req.user.role !== "admin"
+    ) {
       return next(
         new ErrorResponse(
           `User ${req.user._id} is not authorized to update this event`,

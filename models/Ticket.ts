@@ -31,7 +31,6 @@ const TicketSchema = new Schema<ITicketSchema>({
   },
   purchasedAt: {
     type: String,
-    required: [true, "Please add a purchasedAt"],
   },
   price: {
     type: Number,

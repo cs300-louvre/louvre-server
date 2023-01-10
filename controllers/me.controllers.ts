@@ -283,7 +283,6 @@ exports.purchaseTicket = asyncHandler(
 
     if (type === "event") {
       query.event = target._id;
-      query.museum = null;
     }
 
     const ticket = await Ticket.create(query);
