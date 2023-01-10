@@ -87,7 +87,7 @@ exports.getEventChart = asyncHandler(
     });
 
     // Keep at most 3 events
-    const data = events.slice(0, 3);
+    const data = events.slice(0, 10);
 
     res.status(200).json(data);
   }
@@ -107,7 +107,7 @@ exports.getMuseumChart = asyncHandler(
     });
 
     // Keep at most 3 museums
-    const data = museums.slice(0, 3);
+    const data = museums.slice(0, 10);
 
     res.status(200).json(data);
   }
