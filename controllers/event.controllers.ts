@@ -7,6 +7,7 @@ import type {
   IMuseumResponse,
   IMuseumCoreData,
   IEventCoreData,
+  IEventResponse,
 } from "../types";
 import ErrorResponse from "../utils/errorResponse";
 import {
@@ -86,7 +87,7 @@ exports.createEvent = asyncHandler(
 // @access  Public
 exports.getEvent = asyncHandler(
   async (req: RequestWithUser, res: Response, next: any) => {
-    const event: any | null = await Event.findById(req.params.id);
+    const event: any = (await Event.findById(req.params.eventId)) as any;
 
     if (!event) {
       return next(
