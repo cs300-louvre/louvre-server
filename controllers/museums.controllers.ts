@@ -152,3 +152,36 @@ exports.updateMuseum = asyncHandler(
     res.status(200).json(query);
   }
 );
+
+// @desc    Delete museum by id
+// @route   DELETE /museum/:museumId
+// @access  Private
+exports.deleteMuseum = asyncHandler(
+  async (req: RequestWithUser, res: Response, next: any) => {
+    // Find museum by id
+    const museum: any = await Museum.findOne({
+      museumId: req.params.museumId,
+    });
+
+    // Check museum existence
+    if (!museum) {
+      return next(
+        new ErrorResponse(`Museum not found with id of ${req.params.id}`, 404)
+      );
+    }
+
+    // Verify current user is museum owner
+    if (museum.userId.toString() !== req.user.id && req.user.role !== "admin") {
+      return next(
+        new ErrorResponse(
+          `User ${req.user.id} is not authorized to delete this museum`,
+          401
+        )
+      );
+    }
+
+    await museum.remove();
+
+    res.status(200).json({});
+  }
+);
