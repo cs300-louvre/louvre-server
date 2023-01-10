@@ -1,11 +1,12 @@
 const User = require("../models/User");
 const asyncHandler = require("express-async-handler");
-const ErrorResponse = require("../utils/errorResponse");
 const crypto = require("crypto");
+
 
 import { Request, Response } from "express";
 import { RequestWithUser } from "../utils/requestWithUser";
 import sanitizedConfig from "../config/config";
+import ErrorResponse from "../utils/errorResponse";
 
 // @desc    Register a user
 // @route   POST /api/users/register
@@ -86,7 +87,7 @@ const sendTokenInResponse = (user: any, statusCode: number, res: Response) => {
 };
 
 // @desc    Change user password
-// @route   POST /api/users/change_password
+// @route   POST /users/change_password
 // @access  Private
 exports.changePassword = asyncHandler(
   async (req: RequestWithUser, res: Response, next: any) => {
@@ -110,7 +111,7 @@ exports.changePassword = asyncHandler(
 );
 
 // @desc    Recover user password
-// @route   POST /api/users/recover_password
+// @route   POST /users/recover_password
 // @access  Public
 exports.recoverPassword = asyncHandler(
   async (req: Request, res: Response, next: any) => {
@@ -157,7 +158,7 @@ exports.recoverPassword = asyncHandler(
 );
 
 // @desc    Reset user password
-// @route   PUT /api/users/recover_password/:resetToken
+// @route   PUT /users/recover_password/:resetToken
 // @access  Public
 exports.resetPassword = asyncHandler(
   async (req: Request, res: Response, next: any) => {
@@ -211,7 +212,7 @@ const getResetPasswordToken = function (email: string) {
 };
 
 // @desc    Update user details
-// @route   PUT /api/users/change_profile
+// @route   PUT /users/change_profile
 // @access  Private
 exports.changeProfile = asyncHandler(
   async (req: RequestWithUser, res: Response, next: any) => {

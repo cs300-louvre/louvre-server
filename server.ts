@@ -50,7 +50,7 @@ app.use("/rating", rating);
 app.use("/ticket", ticket);
 app.use("/message", message);
 app.use("/conversation", conversation);
-// app.use("/post", post);
+app.use("/post", post);
 
 // Error handler/catcher middleware
 app.use(errorHandler);
