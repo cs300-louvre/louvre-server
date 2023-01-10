@@ -256,6 +256,12 @@ exports.purchaseTicket = asyncHandler(
     const type = req.query.type as string;
     const eomId = req.query.eomId as string;
 
+    if (!type || !eomId) {
+      return next(
+        new ErrorResponse("Invalid request. type and eomId required", 400)
+      );
+    }
+
     let museumId: string = "";
     let target: any = null;
 
@@ -269,7 +275,7 @@ exports.purchaseTicket = asyncHandler(
 
     const query = {
       userId: userId,
-      museum: museumId,
+      museum: museumId as string | null,
       event: null,
       price: target.ticketPrice,
       status: "paid",
@@ -277,6 +283,7 @@ exports.purchaseTicket = asyncHandler(
 
     if (type === "event") {
       query.event = target._id;
+      query.museum = null;
     }
 
     const ticket = await Ticket.create(query);

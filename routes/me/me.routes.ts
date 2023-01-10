@@ -23,6 +23,7 @@ router.route("/rating").get(auth.verifyToken, meAPI.getRatings);
 router
   .route("/ticket")
   .get(auth.verifyToken, meAPI.getMyTickets)
+  .post(auth.verifyToken, meAPI.purchaseTicket);
 
 router.route("/change_password").patch(auth.verifyToken, meAPI.changePassword);
 
