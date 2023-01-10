@@ -7,6 +7,6 @@ const router = express.Router();
 
 router.route("/:ticketId").get(auth.verifyToken, ticketAPI.getTicketById);
 
-router.route("/").post(auth.verifyToken, ticketAPI.checkIn);
+router.route("/:id/checkin").put(auth.verifyToken, ticketAPI.checkIn);
 
 module.exports = router;

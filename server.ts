@@ -34,7 +34,11 @@ const search = require("./routes/search/search.routes");
 // Initialize express
 const app = express();
 app.use(cors());
-app.use(bodyParser.json()); // Body (json) parser
+app.use(
+  bodyParser.json({
+    limit: "50mb",
+  })
+); // Body (json) parser
 app.use(cookieParser()); // Cookie parser
 app.use(morgan("dev")); // Logger
 
