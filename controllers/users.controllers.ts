@@ -76,6 +76,9 @@ const sendTokenInResponse = (user: any, statusCode: number, res: Response) => {
   };
 
   // res.status(statusCode).cookie("token", token, option).json({
+  //   success: true,
+  //   token,
+  // });
   res.status(statusCode).json({
     success: true,
     token,

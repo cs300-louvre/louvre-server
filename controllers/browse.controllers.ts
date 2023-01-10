@@ -72,3 +72,43 @@ exports.getBrowseEvents = asyncHandler(
     res.status(200).json(data);
   }
 );
+
+// @desc    Get list of events with descending numOfFollowers (integers)
+// @route   GET /browse/event_chart
+// @access  Public
+exports.getEventChart = asyncHandler(
+  async (req: Request, res: Response, next: any) => {
+    // Fetch all events from the API
+    const events = await Event.find();
+
+    // sort events by number of followers, descending integers
+    events.sort((a, b) => {
+      return b.numOfFollowers - a.numOfFollowers;
+    });
+
+    // Keep at most 3 events
+    const data = events.slice(0, 3);
+
+    res.status(200).json(data);
+  }
+);
+
+// @desc    Get list of museums with descending numOfFollowers (integers)
+// @route   GET /browse/museum_chart
+// @access  Public
+exports.getMuseumChart = asyncHandler(
+  async (req: Request, res: Response, next: any) => {
+    // Fetch all museums from the API
+    const museums = await Museum.find();
+
+    // sort museums by number of followers, descending integers
+    museums.sort((a, b) => {
+      return b.numOfFollowers - a.numOfFollowers;
+    });
+
+    // Keep at most 3 museums
+    const data = museums.slice(0, 3);
+
+    res.status(200).json(data);
+  }
+);

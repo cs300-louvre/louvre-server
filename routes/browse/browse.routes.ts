@@ -10,4 +10,8 @@ router.route("/museum").get(browseAPI.getBrowseMuseums);
 
 router.route("/event").get(browseAPI.getBrowseEvents);
 
+router.route("/event_chart").get(browseAPI.getEventChart);
+
+router.route("/museum_chart").get(browseAPI.getMuseumChart);
+
 module.exports = router;
