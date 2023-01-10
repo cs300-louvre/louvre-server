@@ -24,5 +24,7 @@ router
   .route("/ticket")
   .get(auth.verifyToken, meAPI.getMyTickets)
 
+router.route("/change_password").patch(auth.verifyToken, meAPI.changePassword);
+
 
 module.exports = router;
