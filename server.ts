@@ -28,7 +28,7 @@ const rating = require("./routes/rating/rating.routes");
 const ticket = require("./routes/ticket/ticket.routes");
 const message = require("./routes/message/message.routes");
 const conversation = require("./routes/conversation/conversation.routes")
-// const post = require("./routes/post/post.routes")
+const post = require("./routes/post/post.routes")
 
 // Initialize express
 const app = express();
