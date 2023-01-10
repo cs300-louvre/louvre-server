@@ -42,18 +42,11 @@ exports.getPostsByEomId = asyncHandler(
 exports.postPost = asyncHandler(
   async (req: RequestWithUser, res: Response, next: any) => {
     const { eomId, title, body, imageBase64 } = req.body;
-    let postPost: any = await Post.findOne({ eomId });
-
-    if (postPost === null) {
-      postPost = await Post.create({
-        body: body,
-        imageUrl: imageBase64,
-        eomId,
-      });
-    } else {
-      postPost.body = body;
-      await postPost.save();
-    }
+    let postPost: any = await Post.create({
+      body: body,
+      imageUrl: imageBase64,
+      eomId,
+    });
 
     const postsResponse: IPostResponse = {
       createdAt: postPost.createdAt,
