@@ -21,6 +21,12 @@ exports.getMuseums = asyncHandler(
   async (req: Request, res: Response, next: any) => {
     let museums: IMuseumResponse[] | null;
 
+    // Check if the request is coming from a manager
+    if (req.query.userId) {
+      let museum = await Museum.findOne({ userId: req.query.userId });
+      res.status(200).json(museum);
+    }
+
     if (req.query.genre) {
       museums = await Museum.find({
         genre: { $regex: req.query.genre, $options: "i" },
