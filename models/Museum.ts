@@ -16,11 +16,9 @@ const MuseumSchema = new Schema<IMuseumResponse>({
   museumId: { type: String, unique: true, index: true },
   thumbnailUrl: {
     type: String,
-    default: "no-photo.jpg",
   },
   coverUrl: {
     type: String,
-    default: "no-photo.jpg",
   },
   genre: {
     type: String,

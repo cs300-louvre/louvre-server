@@ -47,7 +47,7 @@ exports.postPost = asyncHandler(
     if (postPost === null) {
       postPost = await Post.create({
         body: body,
-        imageBase64,
+        imageUrl: imageBase64,
         eomId,
       });
     } else {
