@@ -1,7 +1,10 @@
 import { Schema, model } from "mongoose";
 
 import { IEventGenre } from "../types";
+import Follow from "./Follow";
+import Post from "./Post";
 import Rating from "./Rating";
+import Ticket from "./Ticket";
 
 export type IEventSchema = {
   genre: IEventGenre;
@@ -136,13 +139,14 @@ EventSchema.methods.setIsFollowedByUser = async function (userId: string) {
   this.isFollowedByUser = false;
 };
 
-// EventSchema.pre("remove", async function (next) {
-//   console.log(`Events being removed from museum ${this._id}`);
+EventSchema.pre("remove", async function (this: IEventSchema, next: any) {
+  console.log(`Event with id ${this.eventId} is being removed...`);
+  await Rating.deleteMany({ eventId: this.eventId, eomId: this.eventId });
+  await Post.deleteMany({ eomId: this.eventId });
+  await Ticket.deleteMany({ event: this.eventId });
+  await Follow.deleteMany({ event: this.eventId });
 
-//   // await this.model("Course").deleteMany({ bootcamp: this._id });
-//   await Rating.deleteMany({ eventId: this.eventId });
-//   next();
-// });
-
+  next();
+});
 
 export default model<IEventSchema>("Event", EventSchema);

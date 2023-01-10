@@ -1,6 +1,11 @@
 import { Schema, model, connect, Types } from "mongoose";
 
 import { IMuseumResponse } from "../types";
+import Post from "./Post";
+import Rating from "./Rating";
+import Event from "./Event";
+import Ticket from "./Ticket";
+import Follow from "./Follow";
 
 const MuseumSchema = new Schema<IMuseumResponse>({
   name: {
@@ -84,21 +89,15 @@ MuseumSchema.pre("save", function (next) {
   next();
 });
 
+MuseumSchema.pre("remove", async function (this: IMuseumResponse, next: any) {
+  console.log(`Museum with Id ${this.museumId} is being removed ...`);
+  await Rating.deleteMany({ museumId: this.museumId, eomId: this.museumId });
+  await Post.deleteMany({ eomId: this.museumId });
+  await Ticket.deleteMany({ museum: this.museumId });
+  await Event.deleteMany({ museumId: this.museumId });
+  await Follow.deleteMany({ museum: this.museumId });
+
+  next();
+});
+
 export default model<IMuseumResponse>("Museum", MuseumSchema);
-
-// // Create museum slug from the name
-// MuseumSchema.pre("save", async function (next) {
-//   if (!this.isModified("title")) {
-//     next();
-//   }
-//   this.slug = slugify(this.name, { lower: true });
-//   next();
-// });
-
-// // Create custom museum id
-// MuseumSchema.post("save", async function () {
-//   if (this.mid) return;
-
-//   this.mid = "m" + this._id;
-//   this.save();
-// });
