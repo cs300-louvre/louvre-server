@@ -17,7 +17,9 @@ import {
 // @access  Public
 exports.getTicketById = asyncHandler(
   async (req: RequestWithUser, res: Response, next: any) => {
-    const ticket = await Ticket.findById(req.params.id);
+    const ticket = await Ticket.findOne({
+      ticketId: req.params.ticketId,
+    });
 
     if (!ticket) {
       return next(
@@ -25,10 +27,9 @@ exports.getTicketById = asyncHandler(
       );
     }
 
-    res.status(200).json({ data: ticket });
+    res.status(200).json(ticket);
   }
 );
-
 
 // @desc    Check in ticket
 // @route   PUT /ticket/:ticketId/checkin
@@ -43,10 +44,10 @@ exports.checkIn = asyncHandler(
         new ErrorResponse(`Ticket not found with id of ${req.params.id}`, 404)
       );
     }
-    
+
     ticket.status = "used";
     await ticket.save();
 
-    res.status(200).json({ data: ticket });
+    res.status(200).json(ticket);
   }
 );
