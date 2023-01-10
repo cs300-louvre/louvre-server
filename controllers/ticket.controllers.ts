@@ -17,9 +17,19 @@ import {
 // @access  Public
 exports.getTicketById = asyncHandler(
   async (req: RequestWithUser, res: Response, next: any) => {
-    const ticket = await Ticket.findOne({
+    const ticket: any = await Ticket.findOne({
       ticketId: req.params.ticketId,
-    });
+    })
+      .populate({
+        path: "museum",
+        model: "Museum",
+        select: "name thumbnailUrl location",
+      })
+      .populate({
+        path: "event",
+        model: "Event",
+        select: "name thumbnailUrl location startTime endTime",
+      });
 
     if (!ticket) {
       return next(
@@ -27,7 +37,38 @@ exports.getTicketById = asyncHandler(
       );
     }
 
-    res.status(200).json(ticket);
+    let eventId: any = null;
+    let name: string = ticket.museum.name;
+    let thumbnailUrl: string = ticket.museum.thumbnailUrl;
+    let location: string = ticket.museum.location;
+    let startTime: any = null;
+    let endTime: any = null;
+
+    if (ticket.event) {
+      eventId = ticket.event.eventId;
+      name = ticket.event.name;
+      thumbnailUrl = ticket.event.thumbnailUrl;
+      location = ticket.event.location;
+      startTime = ticket.event.startTime;
+      endTime = ticket.event.endTime;
+    }
+
+    let ticketResponse: ITicketResponse = {
+      ticketId: ticket.ticketId,
+      userId: ticket.userId,
+      eventId: eventId,
+      museumId: ticket.museum.museumId,
+      purchasedAt: ticket.createdAt,
+      thumbnailUrl: thumbnailUrl,
+      name: name,
+      price: ticket.price,
+      location: location,
+      startTime: startTime,
+      endTime: endTime,
+      status: ticket.status,
+    };
+
+    res.status(200).json(ticketResponse);
   }
 );
 
