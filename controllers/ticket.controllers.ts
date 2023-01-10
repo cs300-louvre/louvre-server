@@ -23,12 +23,12 @@ exports.getTicketById = asyncHandler(
       .populate({
         path: "museum",
         model: "Museum",
-        select: "name thumbnailUrl location",
+        select: "name thumbnailUrl location museumId",
       })
       .populate({
         path: "event",
         model: "Event",
-        select: "name thumbnailUrl location startTime endTime",
+        select: "name thumbnailUrl location startTime endTime eventId",
       });
 
     if (!ticket) {
