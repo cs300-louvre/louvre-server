@@ -5,7 +5,6 @@ import { IPostResponse } from "../types";
 export type IPostSchema = {
     _id?: string | Types.ObjectId;
     createdAt: string;
-    title: string;
     body: string;
     imageUrl: string;
     eomId: string;
@@ -17,17 +16,12 @@ const PostSchema = new Schema<IPostSchema>({
         type: String,
         default: Date.now().toString(),
       },
-    title: {
-        type: String,
-        required: [true, "Please add a title"],
-    },
     body: {
         type: String,
         required: [true, "Please add a body"],  
     },
     imageUrl: {
         type: String,
-        required: [true, "Please add an image"],
     },
     eomId: {
         type: String,
