@@ -12,7 +12,7 @@ router.use("/:museumId/event", eventRouter);
 
 router.route("/").get(museumAPI.getMuseums);
 
-router.route("/:id").get(museumAPI.getMuseumById);
+router.route("/:museumId").get(museumAPI.getMuseumById);
 
 router.route("/").post(auth.verifyToken, museumAPI.createMuseum);
 

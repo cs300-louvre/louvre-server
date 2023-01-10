@@ -44,7 +44,7 @@ exports.getMuseums = asyncHandler(
 exports.getMuseumById = asyncHandler(
   async (req: Request, res: Response, next: any) => {
     const museum: IMuseumResponse | null = await Museum.findOne({
-      museumId: req.params.id,
+      museumId: req.params.museumId,
     });
 
     if (!museum) {
