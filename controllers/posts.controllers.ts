@@ -14,7 +14,6 @@ import Museum from "../models/Museum";
 exports.getPostsByEomId = asyncHandler(
   async (req: Request, res: Response, next: any) => {
     const eomId = req.query.eomId as string;
-
     if (!eomId) {
       res.status(400);
       throw new Error("eomId is required");
