@@ -16,8 +16,7 @@ exports.getMessagesByConversationId = asyncHandler(
     const conversationId = req.query.conversationId as string;
 
     if (!conversationId) {
-      res.status(400);
-      throw new Error("Conversation id is required");
+      return next(new ErrorResponse("Conversation id is required", 400));
     }
 
     // Sort by createdAt where latest message is at first
@@ -49,8 +48,7 @@ exports.createMessage = asyncHandler(
     const { content, conversationId } = req.body;
 
     if (!req.body.conversationId) {
-      res.status(400);
-      throw new Error("Conversation id is required");
+      return next(new ErrorResponse("Conversation id is required", 400));
     }
 
     let conversation = await Conversation.findOne({

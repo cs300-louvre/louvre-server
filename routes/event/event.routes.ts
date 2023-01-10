@@ -9,9 +9,11 @@ const router = express.Router({ mergeParams: true });
 
 router.route("/").get(auth.verifyTokenChill, eventAPI.getEvents);
 
-router.route("/").post(auth.verifyToken, eventAPI.createEvent);
-
 router.route("/:eventId").get(auth.verifyTokenChill, eventAPI.getEvent);
+
+router
+  .route("/")
+  .post(auth.verifyToken, eventAPI.createEvent);
 
 router.route("/:eventId").patch(auth.verifyToken, eventAPI.updateEvent);
 
