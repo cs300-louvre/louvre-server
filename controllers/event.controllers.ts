@@ -89,7 +89,9 @@ exports.createEvent = asyncHandler(
 // @access  Public
 exports.getEvent = asyncHandler(
   async (req: RequestWithUser, res: Response, next: any) => {
-    const event: any = (await Event.findById(req.params.eventId)) as any;
+    const event: any = (await Event.findOne({
+      eventId: req.params.eventId,
+    })) as any;
 
     if (!event) {
       return next(
