@@ -25,6 +25,11 @@ router
     auth.verifyToken,
     auth.checkRoles("manager", "admin"),
     eventAPI.updateEvent
+  )
+  .delete(
+    auth.verifyToken,
+    auth.checkRoles("manager", "admin"),
+    eventAPI.deleteEvent
   );
 
 module.exports = router;

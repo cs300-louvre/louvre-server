@@ -28,6 +28,11 @@ router
     auth.verifyToken,
     auth.checkRoles("manager", "admin"),
     museumAPI.updateMuseum
+  )
+  .delete(
+    auth.verifyToken,
+    auth.checkRoles("manager", "admin"),
+    museumAPI.deleteMuseum
   );
 
 module.exports = router;
