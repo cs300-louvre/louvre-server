@@ -29,6 +29,7 @@ const ticket = require("./routes/ticket/ticket.routes");
 const message = require("./routes/message/message.routes");
 const conversation = require("./routes/conversation/conversation.routes");
 const post = require("./routes/post/post.routes");
+const search = require("./routes/search/search.routes");
 
 // Initialize express
 const app = express();
@@ -51,6 +52,7 @@ app.use("/ticket", ticket);
 app.use("/message", message);
 app.use("/conversation", conversation);
 app.use("/post", post);
+app.use("/search", search);
 
 // Error handler/catcher middleware
 app.use(errorHandler);

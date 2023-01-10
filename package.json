@@ -37,7 +37,10 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "express-async-handler": "^1.2.0",
+    "fast-levenshtein": "^3.0.0",
     "jsonwebtoken": "^9.0.0",
+    "leven-sort": "^4.0.0",
+    "levenshtein-edit-distance": "^3.0.1",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.20",
     "slugify": "^1.6.5"

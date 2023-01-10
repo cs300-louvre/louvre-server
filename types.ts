@@ -207,3 +207,12 @@ export type IMessageResponse = {
   sentAt: string;
   messageId: string;
 };
+
+export type ISearchData = {
+  query: string;
+};
+
+export type ISearchResponse = {
+  museums: IMuseumResponse[];
+  events: IEventResponse[];
+};
