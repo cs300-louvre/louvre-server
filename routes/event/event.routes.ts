@@ -13,8 +13,18 @@ router.route("/:eventId").get(auth.verifyTokenChill, eventAPI.getEvent);
 
 router
   .route("/")
-  .post(auth.verifyToken, eventAPI.createEvent);
+  .post(
+    auth.verifyToken,
+    auth.checkRoles("manager", "admin"),
+    eventAPI.createEvent
+  );
 
-router.route("/:eventId").patch(auth.verifyToken, eventAPI.updateEvent);
+router
+  .route("/:eventId")
+  .patch(
+    auth.verifyToken,
+    auth.checkRoles("manager", "admin"),
+    eventAPI.updateEvent
+  );
 
 module.exports = router;

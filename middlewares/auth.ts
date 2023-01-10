@@ -3,7 +3,7 @@ const User = require("../models/User");
 import jwt from "jsonwebtoken";
 import ErrorResponse from "../utils/errorResponse";
 
-import { Response } from "express";
+import { Request, Response } from "express";
 import { RequestWithUser } from "../utils/requestWithUser";
 import config from "../config/config";
 import asyncHandler from "express-async-handler";
@@ -62,3 +62,22 @@ exports.verifyTokenChill = asyncHandler(
     return exports.verifyToken(req, res, next, false);
   }
 );
+
+// Grant access to specific role
+// can be passed in a list of roles (separated by comma)
+exports.checkRoles = (...roles: string[]) => {
+  // return a middleware function
+  return (req: RequestWithUser, res: any, next: any) => {
+    // check if the list of roles does not include the user's role from the request object
+    // req.user is set in the protect middleware
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new ErrorResponse(
+          `User role ${req.user.role} is not authorized to access this route`,
+          403
+        )
+      );
+    }
+    return next();
+  };
+};

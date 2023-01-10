@@ -14,8 +14,20 @@ router.route("/").get(museumAPI.getMuseums);
 
 router.route("/:museumId").get(museumAPI.getMuseumById);
 
-router.route("/").post(auth.verifyToken, museumAPI.createMuseum);
+router
+  .route("/")
+  .post(
+    auth.verifyToken,
+    auth.checkRoles("manager", "admin"),
+    museumAPI.createMuseum
+  );
 
-router.route("/:museumId").patch(auth.verifyToken, museumAPI.updateMuseum);
+router
+  .route("/:museumId")
+  .patch(
+    auth.verifyToken,
+    auth.checkRoles("manager", "admin"),
+    museumAPI.updateMuseum
+  );
 
 module.exports = router;
