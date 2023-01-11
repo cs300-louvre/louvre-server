@@ -29,10 +29,6 @@ exports.verifyToken = asyncHandler(
     } else if (req.cookies.token) {
       // Set token from cookie
       token = req.cookies.token;
-    } else {
-      return next(
-        new ErrorResponse("Not authorized to access this route", 401)
-      );
     }
 
     // Make sure token exists

@@ -25,6 +25,7 @@ exports.getMuseums = asyncHandler(
     if (req.query.userId) {
       let museum = await Museum.findOne({ userId: req.query.userId });
       res.status(200).json(museum);
+      return;
     }
 
     if (req.query.genre) {
