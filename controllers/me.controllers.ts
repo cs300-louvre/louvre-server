@@ -1,4 +1,4 @@
-const User = require("../models/User");
+import User from "../models/User";
 import { IRatingResponse, ISignInResponse, ITicketResponse } from "./../types";
 import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
@@ -353,7 +353,7 @@ exports.changePassword = asyncHandler(
   async (req: RequestWithUser, res: Response, next: any) => {
     const { currentPassword, newPassword } = req.body;
 
-    const user = await User.findById(req.user.id).select("+password");
+    const user: any = await User.findById(req.user.id).select("+password");
     const isMatch = await user.comparePassword(currentPassword);
 
     if (!isMatch) {

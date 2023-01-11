@@ -1,5 +1,3 @@
-const User = require("../models/User");
-
 import jwt from "jsonwebtoken";
 import ErrorResponse from "../utils/errorResponse";
 
@@ -7,6 +5,7 @@ import { Request, Response } from "express";
 import { RequestWithUser } from "../utils/requestWithUser";
 import config from "../config/config";
 import asyncHandler from "express-async-handler";
+import User from "../models/User";
 
 interface JwtPayload {
   id: string;

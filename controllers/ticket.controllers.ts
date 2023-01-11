@@ -1,4 +1,4 @@
-const User = require("../models/User");
+import User from "../models/User";
 
 const { Types, isValidObjectId } = require("mongoose");
 import { Response, Request } from "express";
