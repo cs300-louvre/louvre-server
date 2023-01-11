@@ -1,8 +1,23 @@
-const mongoose = require("mongoose");
+// const mongoose = require("mongoose");
+import { Schema, model, connect, Types } from "mongoose";
+
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-const UserSchema = new mongoose.Schema({
+export type IUserSchema = {
+  userId: string;
+  name: string;
+  email: string;
+  thumbnailUrl: string;
+  role: string;
+  password: string;
+  resetPasswordToken: string;
+  expirePasswordToken: Date;
+  resetPasswordDate: Date;
+  createdAt: string;
+};
+
+const UserSchema = new Schema<IUserSchema>({
   userId: String,
   name: {
     type: String,
@@ -36,8 +51,8 @@ const UserSchema = new mongoose.Schema({
   expirePasswordToken: Date,
   resetPasswordDate: Date,
   createdAt: {
-    type: Date,
-    default: Date.now,
+    type: String,
+    default: Date.now().toString(),
   },
 });
 
@@ -67,8 +82,8 @@ UserSchema.methods.getSignedJwtToken = function () {
 };
 
 // Comparing input password with user password
-UserSchema.methods.comparePassword = async function (inputPassword) {
+UserSchema.methods.comparePassword = async function (inputPassword: string) {
   return await bcrypt.compare(inputPassword, this.password);
 };
 
-module.exports = mongoose.model("User", UserSchema);
+export default model<IUserSchema>("User", UserSchema);

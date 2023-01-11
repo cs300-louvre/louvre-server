@@ -1,4 +1,3 @@
-const User = require("../models/User");
 const asyncHandler = require("express-async-handler");
 const crypto = require("crypto");
 
@@ -7,6 +6,7 @@ import { Request, Response } from "express";
 import { RequestWithUser } from "../utils/requestWithUser";
 import sanitizedConfig from "../config/config";
 import ErrorResponse from "../utils/errorResponse";
+import User from "../models/User";
 
 // @desc    Register a user
 // @route   POST /api/users/register
@@ -36,7 +36,7 @@ exports.login = asyncHandler(async (req: Request, res: Response, next: any) => {
     return next(new ErrorResponse("Please provide an email and password", 400));
   }
 
-  const user = await User.findOne({ email }).select("+password");
+  const user: any = await User.findOne({ email }).select("+password");
 
   if (!user) {
     return next(new ErrorResponse("Email is not registered", 401));
@@ -93,7 +93,7 @@ exports.changePassword = asyncHandler(
   async (req: RequestWithUser, res: Response, next: any) => {
     const { currentPassword, newPassword } = req.body;
 
-    const user = await User.findById(req.user.id).select("+password");
+    const user: any = await User.findById(req.user.id).select("+password");
     const isMatch = await user.comparePassword(currentPassword);
 
     if (!isMatch) {
@@ -117,7 +117,7 @@ exports.recoverPassword = asyncHandler(
   async (req: Request, res: Response, next: any) => {
     const { email } = req.body;
 
-    const user = await User.findOne({ email });
+    const user: any = await User.findOne({ email });
 
     if (!user) {
       return next(new ErrorResponse("Email is not registered", 401));
@@ -170,7 +170,7 @@ exports.resetPassword = asyncHandler(
     }
 
     const resetPasswordToken = resetToken;
-    const user = await User.findOne({ resetPasswordToken });
+    const user: any = await User.findOne({ resetPasswordToken });
 
     if (!user) {
       return next(new ErrorResponse("Invalid token", 400));
